@@ -7,6 +7,7 @@
 az group create --location francecentral --name b7duna
 ```
 
+### Create a storage account
 ```bash
 az storage account create --name b7dstoracc --resource-group b7duna --sku Standard_GRS
 ```
