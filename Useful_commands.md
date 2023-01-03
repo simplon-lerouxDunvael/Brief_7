@@ -2,16 +2,20 @@
 
 # **Commandes utilisées**
 
+### Create a rg
+```bash
+az group create --location francecentral --name b7duna
+```
 
-### list services
+### List services
 ```bash
 kubectl get service 
 ```
-### list pods
+### List pods
 ```bash
 kubectl get pods
 ```
-### describe running and failed pod
+### Describe running and failed pod
 ```bash
 kubectl describe pods [name]
 ```
