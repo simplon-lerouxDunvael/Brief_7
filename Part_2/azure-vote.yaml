@@ -1,3 +1,5 @@
+# azure-vote.yaml
+
 # Deployment of Redis
 apiVersion: apps/v1
 kind: Deployment
@@ -20,7 +22,7 @@ spec:
             readOnly: false
             volumeAttributes:
               secretName: storage-secret  # required
-              shareName: b6d-redis-fileshare  # required
+              shareName: b7d-redis-fileshare  # required
       containers:
       - name: redis
         image: redis:latest
@@ -129,8 +131,8 @@ spec:
     readOnly: false
     volumeHandle: unique-volumeid
     volumeAttributes:
-      resourceGroup: b6duna
-      shareName: b6d-redis-fileshare
+      resourceGroup: b7duna
+      shareName: b7d-redis-fileshare
     nodeStageSecretRef:
       name: storage-secret
       namespace: default
