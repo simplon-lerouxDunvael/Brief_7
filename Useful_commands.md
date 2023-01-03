@@ -253,7 +253,7 @@ k get ingress
 
 ## Activate the autoscaler on an existing cluster
 ```bash
-az aks update --resource-group b6duna --name AKSClusterd2 --enable-cluster-autoscaler --min-count 1 --max-count 8
+az aks update --resource-group b7duna --name AKSClusterd2 --enable-cluster-autoscaler --min-count 1 --max-count 8
 ```
 
 ## To check the auto scaling creation
