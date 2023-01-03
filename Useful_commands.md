@@ -7,6 +7,10 @@
 az group create --location francecentral --name b7duna
 ```
 
+```bash
+az storage account create --name b7dstoracc --resource-group b7duna --sku Standard_GRS
+```
+
 ### List services
 ```bash
 kubectl get service 
@@ -22,11 +26,11 @@ kubectl describe pods [name]
 
 ### Create AKS Cluster
 ```bash
-az aks create -g b6luna -n AKSClusterLuna --enable-managed-identity --node-count 2 --enable-addons monitoring --enable-msi-auth-for-monitoring  --generate-ssh-keys
+az aks create -g b7duna -n AKSClusterDuna --enable-managed-identity --node-count 2 --enable-addons monitoring --enable-msi-auth-for-monitoring  --generate-ssh-keys
 ```
 ### Connect to the cluster
 ```bash
-az aks get-credentials --resource-group b6luna --name AKSClusterLuna
+az aks get-credentials --resource-group b7duna --name AKSClusterDuna
 ```
 ### Deploy the application
 [link](https://learn.microsoft.com/en-us/azure/aks/learn/quick-kubernetes-deploy-cli#code-try-7)
@@ -41,10 +45,10 @@ kubectl get service votingapp-azure --watch
 ```
 ### Create KT auth & pwd secret
 ```bash
-kubectl create secret generic reddb-pass --from-file=./username.txt --from-file=./password.txt
+kubectl create secret generic redis-secret-duna --from-file=./username.txt --from-file=./password.txt
 ```
 ```bash
-kubectl create secret generic reddb-pass --from-literal=username=devuser --from-literal=password=password_redis_154
+kubectl create secret generic redis-secret-duna --from-literal=username=devuser --from-literal=password=password_redis_154
 ```
 ## Volumes
 
@@ -64,26 +68,26 @@ links :
 
 #### Create KT secret for access to file share
 ```bash
-kubectl create secret generic azure-secret --from-literal=azurestorageaccountname=b6lstorageacc --from-literal=azurestorageaccountkey=JBsbcnoq7ufOg+DJ45B6KN4YNow8GkHhjQHaJfyzn5DyVW9eU0mDfWTpUqMCEKDPWc0HZRyesp5s+AStmP212A==
+kubectl create secret generic azure-secret --from-literal=azurestorageaccountname=b7dstoracc --from-literal=azurestorageaccountkey=Ha/rrRrMwoLotpOK1wT5a1dphjPgfa0z9NZjf7W/1veO6nhHgNtzvjFyIK+y1oBy+I92/y73CPVp+AStu1jQQQ==
 ```
 ## Partie 2
 
 #### Creation Kluster avec ACR
 ##### set this to the name of your Azure Container Registry.  It must be globally unique
 ```bash
-MYACR=lunacr
+MYACR=dunacr
 ```
 ##### Run the following line to create an Azure Container Registry if you do not already have one
 ```bash
-az acr create -n $MYACR -g b6luna --sku basic
+az acr create -n $MYACR -g b7duna --sku basic
 ```
 ##### Create an AKS cluster with ACR integration
 ```bash
-az aks create -g b6luna -n KlusterLuna --enable-managed-identity --node-count 4 --enable-addons monitoring --enable-msi-auth-for-monitoring  --generate-ssh-keys --attach-acr $MYACR
+az aks create -g b7duna -n KlusterDuna --enable-managed-identity --node-count 4 --enable-addons monitoring --enable-msi-auth-for-monitoring  --generate-ssh-keys --attach-acr $MYACR
 ```
 ### Connect to the cluster
 ```bash
-az aks get-credentials --resource-group b6luna --name KlusterLuna
+az aks get-credentials --resource-group b7duna --name KlusterDuna
 ```
 ### Add Gandi webhook jetstack with helm
 
@@ -115,7 +119,7 @@ Apply ingress -> issuer -> certificate
 
 #### update AKS with autoscale
 ```bash
-az aks update --resource-group b6luna --name KlusterLuna --enable-cluster-autoscaler --min-count 1 --max-count 8
+az aks update --resource-group b7duna --name KlusterDuna --enable-cluster-autoscaler --min-count 1 --max-count 8
 ```
 #### Autoscaling
 
