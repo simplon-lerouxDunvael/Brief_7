@@ -160,14 +160,3 @@ spec:
   resources:
     requests:
       storage: 3Gi
-      memory: 128Mi
-    limits:
-      cpu: 250m
-      memory: 256Mi
-  volumeMounts:
-    - name: redis-pv
-    - mountPath: "/data"
-volumes:
-  - name: redis-pv
-    persistentVolumeClaim:
-    claimName: redis-pvc
