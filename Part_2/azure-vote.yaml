@@ -114,37 +114,37 @@ spec:
     app: votingapp-azure
 
 ---
-# PV creation
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: redis-pv
-spec:
-  capacity:
-    storage: 5Gi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: azurefile-csi
-  csi:
-    driver: file.csi.azure.com
-    readOnly: false
-    volumeHandle: unique-volumeid
-    volumeAttributes:
-      resourceGroup: b7duna
-      shareName: b7d-redis-fileshare
-    nodeStageSecretRef:
-      name: storage-secret
-      namespace: default
-  mountOptions:
-    - dir_mode=0777
-    - file_mode=0777
-    - uid=0
-    - gid=0
-    - mfsymlinks
-    - cache=strict # https://linux.die.net/man/8/mount.cifs
-    - nosharesock
-    - nobrl
+# # PV creation
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: redis-pv
+# spec:
+#   capacity:
+#     storage: 5Gi
+#   accessModes:
+#     - ReadWriteMany
+#   persistentVolumeReclaimPolicy: Retain
+#   storageClassName: azurefile-csi
+#   csi:
+#     driver: file.csi.azure.com
+#     readOnly: false
+#     volumeHandle: unique-volumeid
+#     volumeAttributes:
+#       resourceGroup: b7duna
+#       shareName: b7d-redis-fileshare
+#     nodeStageSecretRef:
+#       name: storage-secret
+#       namespace: default
+#   mountOptions:
+#     - dir_mode=0777
+#     - file_mode=0777
+#     - uid=0
+#     - gid=0
+#     - mfsymlinks
+#     - cache=strict # https://linux.die.net/man/8/mount.cifs
+#     - nosharesock
+#     - nobrl
 
 ---
 # PV Claim creation
@@ -160,3 +160,14 @@ spec:
   resources:
     requests:
       storage: 3Gi
+      memory: 128Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+  volumeMounts:
+    - name: redis-pv
+    - mountPath: "/data"
+volumes:
+  - name: redis-pv
+    persistentVolumeClaim:
+    claimName: redis-pvc
