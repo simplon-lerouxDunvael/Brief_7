@@ -102,6 +102,16 @@ kubectl get events --sort-by='.metadata.creationTimestamp' -w
 I changed the previous version of the voting app with the new one : simplonasa/azure_voting_app:v1.0.11 and my container for the Voting app was successfully created.
 It then displayed in CrashLoopBackOff because redis was not created but now i just needed to find a solution for redis for everything to work properly.
 
+## 13. Create a storage share for the storage account
+
+I checked if i had a storage share for my storage account with the command :
+
+```bash
+az storage share list --account-name b7dstoracc --account-key Ha/rrRrMwoLotpOK1wT5a1dphjPgfa0z9NZjf7W/1veO6nhHgNtzvjFyIK+y1oBy+I92/y73CPVp+AStu1jQQQ==
+```
+
+I did not, so i created a storage share directly on my storage account.
+
 
 ## X. Creation of DNS records (A)
 
