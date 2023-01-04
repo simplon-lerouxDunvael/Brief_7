@@ -11,17 +11,6 @@ pool:
 
 steps:
 
-- task: Kubernetes@1
-  inputs:
-    connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceEndpoint: 'Kubernetes Service Connection'
-    command: 'apply'
-    useConfigurationFile: true
-    configuration: '/home/vsts/Part_2/azure-vote.yaml'
-    secretType: 'dockerRegistry'
-    containerRegistryType: 'Azure Container Registry'
-  displayName: 'Run Voting App deployment'
-
 - task: CmdLine@2
   inputs:
     script: |
