@@ -13,7 +13,6 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
--
 - task: Kubernetes@1
   inputs:
     connectionType: 'Kubernetes Service Connection'
