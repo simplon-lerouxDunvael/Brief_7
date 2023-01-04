@@ -138,6 +138,8 @@ As Kubernetes automatically creates a PV when a PVC is created, i removed the PV
 
 Then 
 
+
+
 ## X. Creation of DNS records (A)
 
 __Add screenshot__
