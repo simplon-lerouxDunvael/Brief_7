@@ -1,48 +1,92 @@
-### Etapes scripts et Pipelines
+## Etapes scripts et Pipelines
 
-### 1. Creation of a resource group
+## 1. Creation of a resource group
 
 ```bash
 az group create --location francecentral --name b7duna
 ```
 
-### 2. Creation of a storage account (standard GRS)
+## 2. Creation of a storage account (standard GRS)
 
 ```bash
 az storage account create --name b7dstoracc --resource-group b7duna --sku Standard_GRS
 ```
 
-### 3. Creation of the AKS Cluster (with SSH keys generated)
+## 3. Creation of the AKS Cluster (with SSH keys generated)
 
 ```bash
 az aks create -g b7duna -n AKSClusterDuna --enable-managed-identity --node-count 2 --enable-addons monitoring --enable-msi-auth-for-monitoring  --generate-ssh-keys
 ```
 
-### 4. Connecting the AKS Cluster and Azure
+## 4. Connecting the AKS Cluster and Azure
 
 ```bash
 az aks get-credentials --resource-group b7duna --name AKSClusterDuna
 ```
 
-### 5. Creation of the redis secret
+## 5. Creation of the redis secret
 
 ```bash
 kubectl create secret generic redis-secret-duna --from-literal=username=devuser --from-literal=password=password_redis_154
 ```
 
-### 6. Creation of the storage account secret
+## 6. Creation of the storage account secret
 
 ```bash
 kubectl create secret generic azure-secret --from-literal=azurestorageaccountname=b7dstoracc --from-literal=azurestorageaccountkey=Ha/rrRrMwoLotpOK1wT5a1dphjPgfa0z9NZjf7W/1veO6nhHgNtzvjFyIK+y1oBy+I92/y73CPVp+AStu1jQQQ==
 ```
 
-### 7. Connecting to Azure DevOps Pipelines
+## 7. Connecting to Azure DevOps Pipelines
 
-### X. Creation of DNS records (A)
+First i went to Azure DevOps, created a project and clicked on Pipelines : https://dev.azure.com/dlerouxext/b7duna/_build  
+Then i added a service connection (Project settings > service connections > add > kubernetes).
+
+![service_connection2](https://user-images.githubusercontent.com/108001918/210520992-0536c68a-17b6-4b8a-91e4-2bccb2159e75.png)
+
+## 8. Creation of a test pipeline
+
+I created a new pipeline and provided its location (Github.yaml) and the repository (Brief_7). Then i chose a starter template and used the assistant to add a Kubectl task.  
+Finally i saved it and ran it. 
+
+![pipeline_job_run](https://user-images.githubusercontent.com/108001918/210521068-ec3cc98c-e2ab-46a7-9d46-3cadd39a3c37.png)
+
+## 9. Checks and tests
+
+In order to understand how the pipeline works and the path used on the pipeline's environment vm, i used the commands ```pwd``` and ```ls -la``` on my pipeline script :
+
+![pipeline_job_run2](https://user-images.githubusercontent.com/108001918/210543908-3f4670ec-8fdb-444f-acb7-e728a63d2d48.png)
+
+It allowed me to know which path i needed to put to refer the .yaml file to use in the pipeline.
+
+## 10. Error messages
+
+I received an error at the end of the job. It seems that Azure does not have the rights to create a persistent volume and the PV claim.
+
+![Error_pipeline](https://user-images.githubusercontent.com/108001918/210544375-1f1e042e-a659-4c1f-941b-49a9ce07d471.png)
+
+
+On the Azure CLI i searched the service account default used by Azure to run the pipeline with the following command :
+
+```bash
+kubectl get serviceaccounts/default
+```
+
+Alfred tried to bind an admin role he created to the Azure service account Default to see if we could get admin rights on the Kubernetes cluster. Sadly it did not work.
+
+![Error_pipeline2](https://user-images.githubusercontent.com/108001918/210545569-b0ce0e74-e461-4407-b3fc-69c6ecfbaad5.png)
+
+## 11. Trying to find a solution
+
+I recreated my Kubernetes Service Connection and checked "Use cluster admin credentials". Then i reran my pipeline.
+
+I created a container in my storage account in order to be able to use my fileshare for the PV and PVC.
+
+
+## X. Creation of DNS records (A)
 
 __Add screenshot__
 
-### X. Add Gandi webhook jetstack with helm
+## X. Add Gandi webhook jetstack with helm
 
 [Jetstack](https://github.com/bwolf/cert-manager-webhook-gandi)
 
@@ -54,19 +98,19 @@ helm repo add jetstack https://charts.jetstack.io
 helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true --version v1.9.1 --set 'extraArgs={--dns01-recursive-nameservers=8.8.8.8:53\,1.1.1.1:53}'
 ```
 
-### X. Gandi secret
+## X. Gandi secret
 
 ```bash
 kubectl create secret generic gandi-credentials --namespace cert-manager --from-literal=api-token='2DqJpnKJljl9yWQIolq2xRXO'
 ```
 
-### X. Install cert-manager webhook for gandi
+## X. Install cert-manager webhook for gandi
 
 ```bash
 helm install cert-manager-webhook-gandi --repo https://bwolf.github.io/cert-manager-webhook-gandi --version v0.2.0 --namespace cert-manager --set features.apiPriorityAndFairness=true  --set logLevel=6 --generate-name
 ```
 
-### X. create secret role and bind for webhook
+## X. create secret role and bind for webhook
 
 ```bash
 kubectl create role access-secret --verb=get,list,watch,update,create --resource=secrets
@@ -78,8 +122,8 @@ kubectl create rolebinding --role=access-secret default-to-secrets --serviceacco
 
 Then apply in this order : ingress -> issuer -> certificate
 
-### X. 
-### X. 
+## X. 
+## X. 
 
 
 
@@ -246,3 +290,4 @@ kubectl delete -A ValidatingWebhookConfiguration [rolename]
 ```bash
 kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
 ```
+
