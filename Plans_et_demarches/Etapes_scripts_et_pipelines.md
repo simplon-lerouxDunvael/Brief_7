@@ -81,6 +81,27 @@ I recreated my Kubernetes Service Connection and checked "Use cluster admin cred
 
 I created a container in my storage account in order to be able to use my fileshare for the PV and PVC.
 
+My PV displayed but was not mounted thus my redis container could not be created.
+
+Get the logs and events to understand the errors :
+
+```bash
+kubectl get events
+```
+
+```bash
+kubectl get events --sort-by='.metadata.creationTimestamp'
+```
+
+```bash
+kubectl get events --sort-by='.metadata.creationTimestamp' -w
+```
+
+## 12. Updating the voting app on the script
+
+I changed the previous version of the voting app with the new one : simplonasa/azure_voting_app:v1.0.11 and my container for the Voting app was successfully created.
+It then displayed in CrashLoopBackOff because redis was not created but now i just needed to find a solution for redis for everything to work properly.
+
 
 ## X. Creation of DNS records (A)
 
