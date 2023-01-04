@@ -33,7 +33,7 @@ kubectl create secret generic redis-secret-duna --from-literal=username=devuser 
 ## 6. Creation of the storage account secret
 
 ```bash
-kubectl create secret generic azure-secret --from-literal=azurestorageaccountname=b7dstoracc --from-literal=azurestorageaccountkey=Ha/rrRrMwoLotpOK1wT5a1dphjPgfa0z9NZjf7W/1veO6nhHgNtzvjFyIK+y1oBy+I92/y73CPVp+AStu1jQQQ==
+kubectl create secret generic storage-secret --from-literal=azurestorageaccountname=b7dstoracc --from-literal=azurestorageaccountkey=Ha/rrRrMwoLotpOK1wT5a1dphjPgfa0z9NZjf7W/1veO6nhHgNtzvjFyIK+y1oBy+I92/y73CPVp+AStu1jQQQ==
 ```
 
 ## 7. Connecting to Azure DevOps Pipelines
