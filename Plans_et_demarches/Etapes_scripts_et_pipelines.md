@@ -1,3 +1,5 @@
+<style>body {text-align: justify}</style>
+
 ## Etapes scripts et Pipelines
 
 ## 1. Creation of a resource group
@@ -77,13 +79,15 @@ Alfred tried to bind an admin role he created to the Azure service account Defau
 
 ## 11. Trying to find a solution
 
-I recreated my Kubernetes Service Connection and checked "Use cluster admin credentials". Then i reran my pipeline.
+I recreated my Kubernetes Service Connection and checked "Use cluster admin credentials". As Alfred changed the credentials previously, when i reran my pipeline i had no rights issue.
+
+Then i focused on the PV and PVC issue.
 
 I created a container in my storage account in order to be able to use my fileshare for the PV and PVC.
 
 My PV displayed but was not mounted thus my redis container could not be created.
 
-Get the logs and events to understand the errors :
+To understand the errors i had i checked the events :
 
 ```bash
 kubectl get events
@@ -100,9 +104,9 @@ kubectl get events --sort-by='.metadata.creationTimestamp' -w
 ## 12. Updating the voting app on the script
 
 I changed the previous version of the voting app with the new one : simplonasa/azure_voting_app:v1.0.11 and my container for the Voting app was successfully created.
-It then displayed in CrashLoopBackOff because redis was not created but now i just needed to find a solution for redis for everything to work properly.
+It then displayed in CrashLoopBackOff because redis was not created but now i just needed to find a solution for redis and the PV/PVC for everything to work properly.
 
-## 13. Create a storage share for the storage account
+## 13. Creation of a storage share for the storage account
 
 I checked if i had a storage share for my storage account with the command :
 
@@ -112,6 +116,27 @@ az storage share list --account-name b7dstoracc --account-key Ha/rrRrMwoLotpOK1w
 
 I did not, so i created a storage share directly on my storage account.
 
+```bash
+az storage share create --account-name b7dstoracc --name b7d-redis-fileshare --account-key Ha/rrRrMwoLotpOK1wT5a1dphjPgfa0z9NZjf7W/1veO6nhHgNtzvjFyIK+y1oBy+I92/y73CPVp+AStu1jQQQ==
+```
+
+Then i verified that it had been successfully created.
+
+![storage-share_check](https://user-images.githubusercontent.com/108001918/210567347-d9933eb0-4cf3-4753-a70e-1ed4170ecbf9.png)
+
+Then i check my pods and services :
+kubectl get pods
+kubectl get services
+
+As everything was running perfectly, i used the IP address to connect to the Voting App. It worked fine. Then i deleted the redis pod ```kubectl delete pod redis-service``` and typed ```kubcetl get pods```. The redis service was automatically renewed.  
+Finally, i refreshed the voting app page and found out that the votes count had not been reset. All the containers were working and the persistent volume as well.
+
+
+## 14. Remove the PV
+
+As Kubernetes automatically creates a PV when a PVC is created, i removed the PV from my script and decided to start again without creating the storage account, the storage share to verify if Kubernetes would do everything automatically.
+
+Then 
 
 ## X. Creation of DNS records (A)
 
