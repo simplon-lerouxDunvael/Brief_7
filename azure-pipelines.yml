@@ -24,7 +24,7 @@ steps:
 
 - task: CmdLine@2
   inputs:
-    script: 
+    script: |
     cat /home/vsts/version/version.vote
     mkdir /home/vsts/version
     mkdir /home/vsts/git
