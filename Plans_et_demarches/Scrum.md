@@ -19,13 +19,11 @@ Objectifs :
 Mercredi 04/01/23  
 Résultats de la veille :
 
-* 
-* 
+* Bien avancé
 
 Objectifs :
 
-* 
-* 
+* Réussir à déployer la pipeline
 
 Jeudi 05/01/23  
 Résultats de la veille :
