@@ -1,4 +1,4 @@
-<style>body {text-align: justify}</style>
+<div style='text-align: justify;'>
 
 ## Etapes scripts et Pipelines
 
@@ -134,11 +134,23 @@ Finally, i refreshed the voting app page and found out that the votes count had 
 
 ## 14. Remove the PV
 
-As Kubernetes automatically creates a PV when a PVC is created, i removed the PV from my script and decided to start again without creating the storage account, the storage share to verify if Kubernetes would do everything automatically.
+As Kubernetes automatically creates a PV when a PVC is created, i removed the PV from my script and decided to start again without creating the storage account, the storage share to verify if Kubernetes would do everything automatically. Then i ran the pipeline.
 
-Then 
+When i searched for the PVC and the pods with kubectl commands on Azure CLI, their status showed that it did not work properly.
 
+![not_working_AGAIN](https://user-images.githubusercontent.com/108001918/210743380-128d1882-c8ad-45f6-a2c4-4f159585c20e.png)
 
+After some researches _(and screechs)_, i modified the ```volumes``` part on the redis container with the persistentVolumeClaim and removed the references to the PV. I updated it as well in the ```volumeMounts``` part. Finally, i relaunched the pipeline and the job ran successfully.
+
+## 15. Delete everything and start again
+
+I decided to delete my resource groups to try once again from scratch and check if it also worked when Alfred and Bryan weren't watching _(just in case the code gets pressured to work when they are present, we never know)_.
+
+-----
+
+## 16. Time to get that certificate !
+
+Once the services were working properly and the persistent volume was operationnal, i decided it was time to install a certificate.
 
 ## X. Creation of DNS records (A)
 
@@ -349,3 +361,4 @@ kubectl delete -A ValidatingWebhookConfiguration [rolename]
 kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
 ```
 
+</div>
