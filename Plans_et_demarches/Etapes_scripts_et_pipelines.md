@@ -8,11 +8,11 @@
 az group create --location francecentral --name b7duna
 ```
 
-## 2. Creation of a storage account (standard GRS)
+<!-- ## 2. Creation of a storage account (standard GRS)
 
 ```bash
 az storage account create --name b7dstoracc --resource-group b7duna --sku Standard_GRS
-```
+``` -->
 
 ## 3. Creation of the AKS Cluster (with SSH keys generated)
 
@@ -32,11 +32,11 @@ az aks get-credentials --resource-group b7duna --name AKSClusterDuna
 kubectl create secret generic redis-secret-duna --from-literal=username=devuser --from-literal=password=password_redis_154
 ```
 
-## 6. Creation of the storage account secret
+<!-- ## 6. Creation of the storage account secret
 
 ```bash
 kubectl create secret generic storage-secret --from-literal=azurestorageaccountname=b7dstoracc --from-literal=azurestorageaccountkey=Ha/rrRrMwoLotpOK1wT5a1dphjPgfa0z9NZjf7W/1veO6nhHgNtzvjFyIK+y1oBy+I92/y73CPVp+AStu1jQQQ==
-```
+``` -->
 
 ## 7. Connecting to Azure DevOps Pipelines
 
@@ -178,6 +178,35 @@ I used the command ```kubectl get ingress```.
 ## 18. Time to get that certificate !
 
 Once the services were working properly, that the persistent volume was operationnal and that ingress was working properly, I decided it was time to install a certificate.
+
+## 19. Install ingress and removed the host and load balancer to get ingress ip address
+
+I removed the Load balancer in my azure-vote.yaml file in order to put ClusterIP so that ingress can provide an IP address to use for my DNS record.  
+
+![clusterIP_for_ingress](https://user-images.githubusercontent.com/108001918/210793328-a1052a6d-c03c-4dc7-bc24-0331170b7aac.png)
+
+![no_tls](https://user-images.githubusercontent.com/108001918/210793423-5cf4b0af-93ea-4a51-b412-6439adef0f04.png)
+
+I removed the TLS parts, the host and the TLS annotations in my ingress.yaml file. Then i applied it ```kubectl apply -f ingress.yaml``` and checked it with ```kubectl get ingress```.
+
+But i had no IP address 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 19. Install Cert-manager and Jetstack (for gandi)
 
