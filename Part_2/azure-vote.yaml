@@ -120,3 +120,72 @@ spec:
   resources:
     requests:
       storage: 3Gi
+
+---
+# Ingress creation
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: votingapp-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/issuer: letsencrypt
+    cert-manager.io/issuer-kind: Issuer
+    cert-manager.io/issuer-group: cert-manager.io
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: smoothie.simplon-duna.space
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: voting-service
+            port: 
+              number: 80
+  tls: # placing a host in the TLS config will determine what ends up in the cert's subjectAlt
+  - hosts:
+    - smoothie.simplon-duna.space
+    secretName: secret-tls # cert-manager will store the created certificate in this secret.
+
+---
+# Cert-manager 
+# apiVersion: cert-manager.io/v1
+# kind: Certificate
+# metadata:
+#   name: smoothie.simplon-duna.space
+# spec:
+#   dnsNames:
+#   - smoothie.simplon-duna.space
+#   issuerRef:
+#     name: letsencrypt
+#     kind: Issuer
+#   secretName: secret-tls
+
+---
+# Issuer
+# apiVersion: cert-manager.io/v1
+# kind: Issuer
+# metadata:
+#   name: letsencrypt
+# spec:
+#   acme:
+#     # The ACME server URL
+#     server: https://acme-v02.api.letsencrypt.org/directory
+#     # Email address used for ACME registration
+#     email: dunvaelleroux@gmail.com
+#     # Name of a secret used to store the ACME account private key
+#     privateKeySecretRef:
+#       name: letsencrypt
+#     solvers:
+#     - dns01:
+#         webhook:
+#           groupName: acme.bwolf.me
+#           solverName: gandi
+#           config:
+#             apiKeySecretRef:
+#               key: api-token
+#               name: gandi-credentials
+#               namespace: cert-manager
