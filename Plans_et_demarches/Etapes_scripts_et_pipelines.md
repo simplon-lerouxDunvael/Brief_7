@@ -175,39 +175,53 @@ I used the command ```kubectl get ingress```.
 
 ![ingress_working](https://user-images.githubusercontent.com/108001918/210758282-2caa05ef-fa54-4a3f-864f-c5ce27f499a7.png)
 
-## X. Time to get that certificate !
+## 18. Time to get that certificate !
 
 Once the services were working properly, that the persistent volume was operationnal and that ingress was working properly, I decided it was time to install a certificate.
 
-## X. Creation of DNS records (A)
-
-__Add screenshot__
-
-## X. Add Gandi webhook jetstack with helm
+## 19. Install Cert-manager and Jetstack (for gandi)
 
 [Jetstack](https://github.com/bwolf/cert-manager-webhook-gandi)
+
+I installed Jetstack and created a repository.
 
 ```bash
 helm repo add jetstack https://charts.jetstack.io
 ```
 
-```bash
-helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true --version v1.9.1 --set 'extraArgs={--dns01-recursive-nameservers=8.8.8.8:53\,1.1.1.1:53}'
-```
-
-## X. Gandi secret
+Then, I installed cert-manager ([To check cert-manager last version to install](https://cert-manager.io/docs/installation/supported-releases/)).
 
 ```bash
-kubectl create secret generic gandi-credentials --namespace cert-manager --from-literal=api-token='2DqJpnKJljl9yWQIolq2xRXO'
+helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true --version v1.10.1 --set 'extraArgs={--dns01-recursive-nameservers=8.8.8.8:53\,1.1.1.1:53}'
 ```
 
-## X. Install cert-manager webhook for gandi
+<img width="1820" alt="Cert_manager" src="https://user-images.githubusercontent.com/108001918/210761309-393e496c-ff14-41e2-b02a-7b65fb7baeb7.png">
+
+Then i ran my pipeline and the cert-manager was deployed.
+
+![cert-manager_pipeline_working](https://user-images.githubusercontent.com/108001918/210762461-2c7fb160-6cc5-4fe2-8f19-ada6a1eeeeae.png)
+
+## 20. Gandi secret
+
+Then i created a secret for Gandi with the token from my gandi dns.  
+_To check the token > settings from account > account and security > security._
+
+```bash
+kubectl create secret generic gandi-credentials --namespace cert-manager --from-literal=api-token='yRAidcmI81TWiAX1CaYNTJiN'
+```
+![gandi-secret](https://user-images.githubusercontent.com/108001918/210763575-22af59d1-812b-43fa-9017-9b9ff20b7b15.png)
+
+## 21. Install cert-manager webhook for gandi
+
+Then i installed cert-manager-webhook for gandi.
 
 ```bash
 helm install cert-manager-webhook-gandi --repo https://bwolf.github.io/cert-manager-webhook-gandi --version v0.2.0 --namespace cert-manager --set features.apiPriorityAndFairness=true  --set logLevel=6 --generate-name
 ```
 
-## X. create secret role and bind for webhook
+## 22. create secret role and bind for webhook
+
+I gave role access and created a rolebinding for the webhook.
 
 ```bash
 kubectl create role access-secret --verb=get,list,watch,update,create --resource=secrets
@@ -219,7 +233,17 @@ kubectl create rolebinding --role=access-secret default-to-secrets --serviceacco
 
 Then apply in this order : ingress -> issuer -> certificate
 
-## X. 
+## 23. Creation of DNS records (A)
+
+Finally, i created two records (A and CAA) with the Voting App's Ip address.
+
+![dns_records](https://user-images.githubusercontent.com/108001918/210765206-dcfd2456-27b6-4869-b2bd-c3a582036a60.png)
+
+I checked that my pipeline was launched and tried to connect to my voting app with the url. I could not connect to my voting app.
+I chekc my cert-manager with kubectl and found their Ready Status in FALSE.
+
+![status_false](https://user-images.githubusercontent.com/108001918/210767063-add8eaeb-4cb3-43a5-b266-3080b64606dd.png)
+
 ## X. 
 
 
