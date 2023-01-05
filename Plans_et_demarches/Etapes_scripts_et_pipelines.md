@@ -170,16 +170,7 @@ Then I verified that the pipeline job was a success.
 
 ## 17. Add Ingress
 
-As the scheduling was working, I decided to install Ingress to be able to access to the voting app from an url i choose (and that i would later link to my dns record).  
-I used the command ```kubectl get ingress```.
-
-![ingress_working](https://user-images.githubusercontent.com/108001918/210758282-2caa05ef-fa54-4a3f-864f-c5ce27f499a7.png)
-
-## 18. Time to get that certificate !
-
-Once the services were working properly, that the persistent volume was operationnal and that ingress was working properly, I decided it was time to install a certificate.
-
-## 19. Install ingress and removed the host and load balancer to get ingress ip address
+As the scheduling was working, I decided to install Ingress to be able to access to the voting app from an url http I chose (and that i would later link to my dns record).  
 
 I removed the Load balancer in my azure-vote.yaml file in order to put ClusterIP so that ingress can provide an IP address to use for my DNS record.  
 
@@ -187,32 +178,24 @@ I removed the Load balancer in my azure-vote.yaml file in order to put ClusterIP
 
 ![no_tls](https://user-images.githubusercontent.com/108001918/210793423-5cf4b0af-93ea-4a51-b412-6439adef0f04.png)
 
-I removed the TLS parts, the host and the TLS annotations in my ingress.yaml file. Then i applied it ```kubectl apply -f ingress.yaml``` and checked it with ```kubectl get ingress```.
+I removed the TLS parts, the host and the TLS annotations in my ingress.yaml file. Then I applied it ```kubectl apply -f ingress.yaml``` and checked it with ```kubectl get ingress```.
 
-But i had no IP address 
+But I had no IP address. So I installed everything that was necessary for ingress with the following command : 
 
+```bash
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.4.0/deploy/static/provider/cloud/deploy.yaml
+```
 
+After this step, ingress finally had an IP address. Then I created a "A" DNS record with the ingress IP address. I checked ingress and it now displayed with : smoothie.simplon-duna.space.
+Finally I connected to the Voting app using smoothie.simplon-duna.space and it worked.
 
+![dns_records](https://user-images.githubusercontent.com/108001918/210812132-630cc498-504f-4b29-b725-66d8f442ef4f.png)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## 19. Install Cert-manager and Jetstack (for gandi)
+## 18. Install Cert-manager and Jetstack (for gandi)
 
 [Jetstack](https://github.com/bwolf/cert-manager-webhook-gandi)
 
-I installed Jetstack and created a repository.
+Since my ingress was working and i could connect in http to my voting app, I installed Jetstack and created a repository.
 
 ```bash
 helm repo add jetstack https://charts.jetstack.io
@@ -226,21 +209,18 @@ helm install cert-manager jetstack/cert-manager --namespace cert-manager --creat
 
 <img width="1820" alt="Cert_manager" src="https://user-images.githubusercontent.com/108001918/210761309-393e496c-ff14-41e2-b02a-7b65fb7baeb7.png">
 
-Then i ran my pipeline and the cert-manager was deployed.
+## 19. Gandi secret
 
-![cert-manager_pipeline_working](https://user-images.githubusercontent.com/108001918/210762461-2c7fb160-6cc5-4fe2-8f19-ada6a1eeeeae.png)
-
-## 20. Gandi secret
-
-Then i created a secret for Gandi with the token from my gandi dns.  
+After cert-manager was installed, i created a secret for Gandi with the token from my gandi dns.  
 _To check the token > settings from account > account and security > security._
 
 ```bash
 kubectl create secret generic gandi-credentials --namespace cert-manager --from-literal=api-token='yRAidcmI81TWiAX1CaYNTJiN'
 ```
+
 ![gandi-secret](https://user-images.githubusercontent.com/108001918/210763575-22af59d1-812b-43fa-9017-9b9ff20b7b15.png)
 
-## 21. Install cert-manager webhook for gandi
+## 20. Install cert-manager webhook for gandi
 
 Then i installed cert-manager-webhook for gandi.
 
@@ -248,9 +228,9 @@ Then i installed cert-manager-webhook for gandi.
 helm install cert-manager-webhook-gandi --repo https://bwolf.github.io/cert-manager-webhook-gandi --version v0.2.0 --namespace cert-manager --set features.apiPriorityAndFairness=true  --set logLevel=6 --generate-name
 ```
 
-## 22. create secret role and bind for webhook
+## 21. Creation of secret role and binding for webhook
 
-I gave role access and created a rolebinding for the webhook.
+I gave role access and created a rolebinding for the webhook (to bind gandi and the cert-manager).
 
 ```bash
 kubectl create role access-secret --verb=get,list,watch,update,create --resource=secrets
@@ -260,20 +240,7 @@ kubectl create role access-secret --verb=get,list,watch,update,create --resource
 kubectl create rolebinding --role=access-secret default-to-secrets --serviceaccount=cert-manager:cert-manager-webhook-gandi-1665664967
 ```
 
-Then apply in this order : ingress -> issuer -> certificate
-
-## 23. Creation of DNS records (A)
-
-Finally, i created two records (A and CAA) with the Voting App's Ip address.
-
-![dns_records](https://user-images.githubusercontent.com/108001918/210765206-dcfd2456-27b6-4869-b2bd-c3a582036a60.png)
-
-I checked that my pipeline was launched and tried to connect to my voting app with the url. I could not connect to my voting app.
-I chekc my cert-manager with kubectl and found their Ready Status in FALSE.
-
-![status_false](https://user-images.githubusercontent.com/108001918/210767063-add8eaeb-4cb3-43a5-b266-3080b64606dd.png)
-
-## X. 
+## 22. 
 
 
 
