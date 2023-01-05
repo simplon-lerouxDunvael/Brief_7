@@ -40,7 +40,7 @@ kubectl create secret generic storage-secret --from-literal=azurestorageaccountn
 
 ## 7. Connecting to Azure DevOps Pipelines
 
-First I went to Azure DevOps, created a project and clicked on Pipelines : https://dev.azure.com/dlerouxext/b7duna/_build  
+First I went to Azure DevOps, created a project and clicked on Pipelines : <https://dev.azure.com/dlerouxext/b7duna/_build>  
 Then I added a service connection (Project settings > service connections > add > kubernetes).
 
 ![service_connection2](https://user-images.githubusercontent.com/108001918/210520992-0536c68a-17b6-4b8a-91e4-2bccb2159e75.png)
@@ -48,7 +48,7 @@ Then I added a service connection (Project settings > service connections > add 
 ## 8. Creation of a test pipeline
 
 I created a new pipeline and provided its location (Github.yaml) and the repository (Brief_7). Then I chose a starter template and used the assistant to add a Kubectl task.  
-Finally I saved it and ran it. 
+Finally I saved it and ran it.
 
 ![pipeline_job_run](https://user-images.githubusercontent.com/108001918/210521068-ec3cc98c-e2ab-46a7-9d46-3cadd39a3c37.png)
 
@@ -65,7 +65,6 @@ It allowed me to know which path I needed to put to refer the .yaml file to use 
 I received an error at the end of the job. It seems that Azure does not have the rights to create a persistent volume and the PV claim.
 
 ![Error_pipeline](https://user-images.githubusercontent.com/108001918/210544375-1f1e042e-a659-4c1f-941b-49a9ce07d471.png)
-
 
 On the Azure CLI I searched the service account default used by Azure to run the pipeline with the following command :
 
@@ -131,7 +130,6 @@ kubectl get services
 As everything was running perfectly, I used the IP address to connect to the Voting App. It worked fine. Then I deleted the redis pod ```kubectl delete pod redis-service``` and typed ```kubcetl get pods```. The redis service was automatically renewed.  
 Finally, I refreshed the voting app page and found out that the votes count had not been reset. All the containers were working and the persistent volume as well.
 
-
 ## 14. Remove the PV
 
 As Kubernetes automatically creates a PV when a PVC is created, I removed the PV from my script and decided to start again without creating the storage account, the storage share to verify if Kubernetes would do everything automatically. Then I ran the pipeline.
@@ -180,7 +178,7 @@ I removed the Load balancer in my azure-vote.yaml file in order to put ClusterIP
 
 I removed the TLS parts, the host and the TLS annotations in my ingress.yaml file. Then I applied it ```kubectl apply -f ingress.yaml``` and checked it with ```kubectl get ingress```.
 
-But I had no IP address. So I installed everything that was necessary for ingress with the following command : 
+But I had no IP address. So I installed everything that was necessary for ingress with the following command :
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.4.0/deploy/static/provider/cloud/deploy.yaml
@@ -236,21 +234,36 @@ I gave role access and created a rolebinding for the webhook (to bind gandi and 
 kubectl create role access-secret --verb=get,list,watch,update,create --resource=secrets
 ```
 
-```bash
-kubectl create rolebinding --role=access-secret default-to-secrets --serviceaccount=cert-manager:cert-manager-webhook-gandi-1665664967
+Then i copied the webhook number with :
+
+```Bash
+k get secrets -n cert-manager
 ```
 
-## 22. 
+![webhook](https://user-images.githubusercontent.com/108001918/210821499-2c9231b6-05a8-4a2a-964b-11c8792a9dbd.png)
 
+And pasted it on the following command :
 
+```bash
+kubectl create rolebinding --role=access-secret default-to-secrets --serviceaccount=cert-manager:cert-manager-webhook-gandi-1672931110
+```
+
+## 22.
+
+k get orders
+k describe orders
+k describe challenges
 
 -----
+
 ## __USEFULL COMMANDS__
 
 #### update AKS with autoscale
+
 ```bash
 az aks update --resource-group b7duna --name KlusterDuna --enable-cluster-autoscaler --min-count 1 --max-count 8
 ```
+
 #### Autoscaling
 
 [Autoscaling](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
@@ -259,21 +272,28 @@ az aks update --resource-group b7duna --name KlusterDuna --enable-cluster-autosc
 
 ----
 
-## To create an alias for a command on azure CLi 
+## To create an alias for a command on azure CLi
+
 alias [WhatWeWant]="[WhatIsChanged]"  
-*Example :*  
+
+_Example :_  
+
 ```bash
 alias k="kubectl"
 ```
 
 ## To deploy resources with yaml file
+
 kubectl apply -f [name-of-the-yaml-file]
-*Example :*  
+
+_Example :_  
+
 ```bash
 kubectl apply -f azure-vote.yaml
 ```
 
 ## To check resources
+
 ```bash
 kubectl get nodes
 kubectl get pods
@@ -283,18 +303,25 @@ kubectl get events
 kubectl get secrets
 kubectl get logs
 ```
-*To keep verifying the resources add --watch at the end of the command :*
-*Example :*
+
+_To keep verifying the resources add --watch at the end of the command :_
+
+_Example :_
+
 ```bash
 kubectl get services --watch
 ```
-*To check the resources according to their namespace, add --namespace after the command and the namespace's name :*
-*Example :*
+
+_To check the resources according to their namespace, add --namespace after the command and the namespace's name :_
+
+_Example :_
+
 ```bash
 kubectl get services --namespace [namespace's-name]
 ```
 
 ## To describe resources
+
 ```bash
 kubectl describe nodes
 kubectl describe pods
@@ -304,25 +331,35 @@ kubectl describe events
 kubectl describe secrets
 kubectl describe logs
 ```
-*To specify which resource needs to be described just put the resource ID at the end of the command.*
-*Example :*
+
+_To specify which resource needs to be described just put the resource ID at the end of the command._
+
+_Example :_
+
 ```bash
 kubectl describe svc redis-service
 ```
-*To access to all the logs from all containers :*
+
+_To access to all the logs from all containers :_
+
 ```bash
 kubectl logs podname --all-containers
 ```
-*To access to the logs from a specific container :*
+
+_To access to the logs from a specific container :_
+
 ```bash
 kubectl logs podname -c [container's-name]
 ```
-*To list all events from a specific pod :*
+
+_To list all events from a specific pod :_
+
 ```bash
 kubectl get events --field-selector [involvedObject].name=[podsname]
 ```
 
 ## To delete resources
+
 ```bash
 kubectl delete deploy --all
 kubectl delete svc --all
@@ -332,34 +369,46 @@ az group delete --name [resourceGroupName] --yes --no-wait
 ```
 
 ## To create a repository Helm and install Jetstack
-*To create the repository and install Jetstack :*
+
+_To create the repository and install Jetstack :_
+
 ```bash
 helm repo add jetstack https://charts.jetstack.io
 ```
-*To check the repository created and Jetstack version :*
+
+_To check the repository created and Jetstack version :_
+
 ```bash
 helm search repo jetstack
 ```
 
 ## To create a role for Gandi's secret and bind it to the webhook
-*To create the role :*
+_To create the role :_
+
 ```bash
 kubectl create role [role-name] --verb=[Authorised-actions] --resource=[Authorised-resource]
 ```
-*Example :*  
+
+_Example :_  
+
 ```bash
 kubectl create role access-secrets --verb=get,list,watch,update,create --resource=secrets
 ```
-*To bind it :*  
+
+_To bind it :_  
+
 ```bash
 kubectl create rolebinding --role=[role-name] [role-name] --serviceaccount=[group]:[group-item]
 ```
-*Example :*  
+
+_Example :_  
+
 ```bash
 kubectl create rolebinding --role=access-secrets default-to-secrets --serviceaccount=cert-manager:cert-manager-webhook-gandi-1665665029
 ```
 
 ## To check TLS certificate in request order
+
 ```bash
 kubectl get certificate
 kubectl get certificaterequest
@@ -368,6 +417,7 @@ kubectl get challenge
 ```
 
 ## To describe TLS certificate in request order
+
 ```bash
 kubectl describe certificate
 kubectl describe certificaterequest
@@ -376,34 +426,43 @@ kubectl describe challenge
 ```
 
 ## Get the IP address to point the DNS to nginx
+
 ```bash
 k get ingress
 ```
 
 ## Activate the autoscaler on an existing cluster
+
 ```bash
 az aks update --resource-group b6duna --name AKSClusterd2 --enable-cluster-autoscaler --min-count 1 --max-count 8
 ```
 
 ## To check the auto scaling creation
+
 ```bash
 get HorizontalPodAutoscaler
 ```
-*Example of how the results will display :*  
+
+_Example of how the results will display :_  
+
 ```bash
 horizontalpodautoscaler.autoscaling/scaling-voteapp created
 ```
 
 ## To check Webhook configuration
+
 ```bash
 kubectl get ValidatingWebhookConfiguration -A
 ```
 
 ## Delete Webhook configuration for a role
+
 ```bash
 kubectl delete -A ValidatingWebhookConfiguration [rolename]  
 ```
-*Example :*  
+
+_Example :_  
+
 ```bash
 kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
 ```
