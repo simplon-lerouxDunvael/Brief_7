@@ -16,7 +16,7 @@ spec:
         app: redis-azure
     spec:
       volumes:
-        - name: red-vol
+        - name: redis-pvc
           csi:
             driver: file.csi.azure.com
             readOnly: false
