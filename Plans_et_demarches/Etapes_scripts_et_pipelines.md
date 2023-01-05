@@ -40,25 +40,25 @@ kubectl create secret generic storage-secret --from-literal=azurestorageaccountn
 
 ## 7. Connecting to Azure DevOps Pipelines
 
-First i went to Azure DevOps, created a project and clicked on Pipelines : https://dev.azure.com/dlerouxext/b7duna/_build  
-Then i added a service connection (Project settings > service connections > add > kubernetes).
+First I went to Azure DevOps, created a project and clicked on Pipelines : https://dev.azure.com/dlerouxext/b7duna/_build  
+Then I added a service connection (Project settings > service connections > add > kubernetes).
 
 ![service_connection2](https://user-images.githubusercontent.com/108001918/210520992-0536c68a-17b6-4b8a-91e4-2bccb2159e75.png)
 
 ## 8. Creation of a test pipeline
 
-I created a new pipeline and provided its location (Github.yaml) and the repository (Brief_7). Then i chose a starter template and used the assistant to add a Kubectl task.  
-Finally i saved it and ran it. 
+I created a new pipeline and provided its location (Github.yaml) and the repository (Brief_7). Then I chose a starter template and used the assistant to add a Kubectl task.  
+Finally I saved it and ran it. 
 
 ![pipeline_job_run](https://user-images.githubusercontent.com/108001918/210521068-ec3cc98c-e2ab-46a7-9d46-3cadd39a3c37.png)
 
 ## 9. Checks and tests
 
-In order to understand how the pipeline works and the path used on the pipeline's environment vm, i used the commands ```pwd``` and ```ls -la``` on my pipeline script :
+In order to understand how the pipeline works and the path used on the pipeline's environment vm, I used the commands ```pwd``` and ```ls -la``` on my pipeline script :
 
 ![pipeline_job_run2](https://user-images.githubusercontent.com/108001918/210543908-3f4670ec-8fdb-444f-acb7-e728a63d2d48.png)
 
-It allowed me to know which path i needed to put to refer the .yaml file to use in the pipeline.
+It allowed me to know which path I needed to put to refer the .yaml file to use in the pipeline.
 
 ## 10. Error messages
 
@@ -67,7 +67,7 @@ I received an error at the end of the job. It seems that Azure does not have the
 ![Error_pipeline](https://user-images.githubusercontent.com/108001918/210544375-1f1e042e-a659-4c1f-941b-49a9ce07d471.png)
 
 
-On the Azure CLI i searched the service account default used by Azure to run the pipeline with the following command :
+On the Azure CLI I searched the service account default used by Azure to run the pipeline with the following command :
 
 ```bash
 kubectl get serviceaccounts/default
@@ -79,15 +79,15 @@ Alfred tried to bind an admin role he created to the Azure service account Defau
 
 ## 11. Trying to find a solution
 
-I recreated my Kubernetes Service Connection and checked "Use cluster admin credentials". As Alfred changed the credentials previously, when i reran my pipeline i had no rights issue.
+I recreated my Kubernetes Service Connection and checked "Use cluster admin credentials". As Alfred changed the credentials previously, when I reran my pipeline I had no rights issue.
 
-Then i focused on the PV and PVC issue.
+Then I focused on the PV and PVC issue.
 
 I created a container in my storage account in order to be able to use my fileshare for the PV and PVC.
 
 My PV displayed but was not mounted thus my redis container could not be created.
 
-To understand the errors i had i checked the events :
+To understand the errors I had I checked the events :
 
 ```bash
 kubectl get events
@@ -104,43 +104,43 @@ kubectl get events --sort-by='.metadata.creationTimestamp' -w
 ## 12. Updating the voting app on the script
 
 I changed the previous version of the voting app with the new one : simplonasa/azure_voting_app:v1.0.11 and my container for the Voting app was successfully created.
-It then displayed in CrashLoopBackOff because redis was not created but now i just needed to find a solution for redis and the PV/PVC for everything to work properly.
+It then displayed in CrashLoopBackOff because redis was not created but now I just needed to find a solution for redis and the PV/PVC for everything to work properly.
 
 ## 13. Creation of a storage share for the storage account
 
-I checked if i had a storage share for my storage account with the command :
+I checked if I had a storage share for my storage account with the command :
 
 ```bash
 az storage share list --account-name b7dstoracc --account-key Ha/rrRrMwoLotpOK1wT5a1dphjPgfa0z9NZjf7W/1veO6nhHgNtzvjFyIK+y1oBy+I92/y73CPVp+AStu1jQQQ==
 ```
 
-I did not, so i created a storage share directly on my storage account.
+I did not, so I created a storage share directly on my storage account.
 
 ```bash
 az storage share create --account-name b7dstoracc --name b7d-redis-fileshare --account-key Ha/rrRrMwoLotpOK1wT5a1dphjPgfa0z9NZjf7W/1veO6nhHgNtzvjFyIK+y1oBy+I92/y73CPVp+AStu1jQQQ==
 ```
 
-Then i verified that it had been successfully created.
+Then I verified that it had been successfully created.
 
 ![storage-share_check](https://user-images.githubusercontent.com/108001918/210567347-d9933eb0-4cf3-4753-a70e-1ed4170ecbf9.png)
 
-Then i check my pods and services :
+Then I check my pods and services :
 kubectl get pods
 kubectl get services
 
-As everything was running perfectly, i used the IP address to connect to the Voting App. It worked fine. Then i deleted the redis pod ```kubectl delete pod redis-service``` and typed ```kubcetl get pods```. The redis service was automatically renewed.  
-Finally, i refreshed the voting app page and found out that the votes count had not been reset. All the containers were working and the persistent volume as well.
+As everything was running perfectly, I used the IP address to connect to the Voting App. It worked fine. Then I deleted the redis pod ```kubectl delete pod redis-service``` and typed ```kubcetl get pods```. The redis service was automatically renewed.  
+Finally, I refreshed the voting app page and found out that the votes count had not been reset. All the containers were working and the persistent volume as well.
 
 
 ## 14. Remove the PV
 
-As Kubernetes automatically creates a PV when a PVC is created, i removed the PV from my script and decided to start again without creating the storage account, the storage share to verify if Kubernetes would do everything automatically. Then i ran the pipeline.
+As Kubernetes automatically creates a PV when a PVC is created, I removed the PV from my script and decided to start again without creating the storage account, the storage share to verify if Kubernetes would do everything automatically. Then I ran the pipeline.
 
-When i searched for the PVC and the pods with kubectl commands on Azure CLI, their status showed that it did not work properly.
+When I searched for the PVC and the pods with kubectl commands on Azure CLI, their status showed that it did not work properly.
 
 ![not_working_AGAIN](https://user-images.githubusercontent.com/108001918/210743380-128d1882-c8ad-45f6-a2c4-4f159585c20e.png)
 
-After some researches _(and screechs)_, i modified the ```volumes``` part on the redis container with the persistentVolumeClaim and removed the references to the PV. I updated it as well in the ```volumeMounts``` part. Finally, i relaunched the pipeline and the job ran successfully.
+After some researches _(and screechs)_, I modified the ```volumes``` part on the redis container with the persistentVolumeClaim and removed the references to the PV. I updated it as well in the ```volumeMounts``` part. Finally, I relaunched the pipeline and the job ran successfully.
 
 ## 15. Delete everything and start again
 
@@ -156,9 +156,17 @@ I decided to delete my resource groups to try once again from scratch and check 
 
 -----
 
-## 16. Time to get that certificate !
+## 16. Scheduling
 
-Once the services were working properly and the persistent volume was operationnal, i decided it was time to install a certificate.
+[Scheduling a pipeline](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/scheduled-triggers?view=azure-devops&tabs=yaml)
+
+In order to update the Voting app with its last version, I scheduled the pipeline so it would ran every hour on the hour.
+
+![scheduling](https://user-images.githubusercontent.com/108001918/210753304-56bbd627-4139-4193-8afa-b20696251a79.png)
+
+## 17. Time to get that certificate !
+
+Once the services were working properly and the persistent volume was operationnal, I decided it was time to install a certificate.
 
 ## X. Creation of DNS records (A)
 
