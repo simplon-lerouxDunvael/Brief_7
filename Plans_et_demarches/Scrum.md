@@ -28,13 +28,12 @@ Objectifs :
 Jeudi 05/01/23  
 Résultats de la veille :
 
-* 
-* 
+* Problem with PV and PVC
 
 Objectifs :
 
-* 
-* 
+* Resolve the PV and PVC issues
+* Start the update of the voting app
 
 Vendredi 05/01/23  
 Résultats de la veille :
