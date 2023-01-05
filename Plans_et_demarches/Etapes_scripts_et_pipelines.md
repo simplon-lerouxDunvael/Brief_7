@@ -164,9 +164,20 @@ In order to update the Voting app with its last version, I scheduled the pipelin
 
 ![scheduling](https://user-images.githubusercontent.com/108001918/210753304-56bbd627-4139-4193-8afa-b20696251a79.png)
 
-## 17. Time to get that certificate !
+Then I verified that the pipeline job was a success.
 
-Once the services were working properly and the persistent volume was operationnal, I decided it was time to install a certificate.
+![scheduling_pipeline_success](https://user-images.githubusercontent.com/108001918/210757983-4f4958a2-c718-46ec-9083-f622e9f4483f.png)
+
+## 17. Add Ingress
+
+As the scheduling was working, I decided to install Ingress to be able to access to the voting app from an url i choose (and that i would later link to my dns record).  
+I used the command ```kubectl get ingress```.
+
+![ingress_working](https://user-images.githubusercontent.com/108001918/210758282-2caa05ef-fa54-4a3f-864f-c5ce27f499a7.png)
+
+## X. Time to get that certificate !
+
+Once the services were working properly, that the persistent volume was operationnal and that ingress was working properly, I decided it was time to install a certificate.
 
 ## X. Creation of DNS records (A)
 
