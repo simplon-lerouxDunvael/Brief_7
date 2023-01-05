@@ -60,16 +60,16 @@ spec: # Par default le type est ClusterIP, il n'y a aucun raison de le spécifie
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: az-voteapp
+  name: votingapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: votingapp-azure
+      app: votingapp
   template:
     metadata:
       labels:
-        app: votingapp-azure
+        app: votingapp
     spec:
       nodeSelector:
         "kubernetes.io/os": linux
@@ -99,13 +99,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: voting-service
+  name: votingapp
 spec:
   type: ClusterIP # LoadBalancer
   ports:
   - port: 80
   selector:
-    app: votingapp-azure
+    app: votingapp
 
 ---
 # PV Claim creation
