@@ -146,6 +146,14 @@ After some researches _(and screechs)_, i modified the ```volumes``` part on the
 
 I decided to delete my resource groups to try once again from scratch and check if it also worked when Alfred and Bryan weren't watching _(just in case the code gets pressured to work when they are present, we never know)_.
 
+![pipeline_working](https://user-images.githubusercontent.com/108001918/210748762-a67a9983-bf18-480d-af1b-de5107fcc2b8.png)
+
+![voting-app_working](https://user-images.githubusercontent.com/108001918/210749443-339f0a3d-befc-4b02-bce9-21c532321b29.png)
+
+![working](https://user-images.githubusercontent.com/108001918/210749947-e702d1aa-9dfe-4591-a5f0-fdbaef5b6e51.png)
+
+![persistent_working](https://user-images.githubusercontent.com/108001918/210750285-4f2fea62-585e-41d3-89f7-d9529023eec3.png)
+
 -----
 
 ## 16. Time to get that certificate !
