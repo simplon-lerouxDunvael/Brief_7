@@ -24,7 +24,7 @@ spec:
         image: redis:latest
         args: ["--requirepass", "$(REDIS_PWD)"]
         volumeMounts:
-        - name: red-vol
+        - name: redis-vol
           mountPath: /data
         env:
         - name: ALLOW_EMPTY_PASSWORD
