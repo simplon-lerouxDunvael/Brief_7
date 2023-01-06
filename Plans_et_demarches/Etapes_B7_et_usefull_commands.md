@@ -1,58 +1,226 @@
 <div style='text-align: justify;'>
 
-## Etapes scripts et Pipelines
+<div id='top'/> 
 
-## 1. Creation of a resource group
+### Summary
+###### [00 - Daily Scrum](#Scrum)
+###### [01 - Kubernetes, AKS and Azure Pipelines doc reading](#Doc)
+###### [02 - Architecture Topology](#Topology)
+###### [03 - Resource List](#Resources)
+###### [04 - Creation of a resource group](#RG)
+###### [05 - Creation of a storage account (standard GRS)](#Storacc)
+###### [06 - Creation of the AKS Cluster (with SSH keys generated)](#AKS)
+###### [07 - Connecting the AKS Cluster and Azure](#Connecting)
+###### [08 - Creation of the redis secret](#RedSecret)
+###### [09 - Connecting to Azure DevOps Pipelines](#DevOps)
+###### [10 - Creation of a test pipeline](#Pipeline)
+###### [11 - Checks and tests](#Checks)
+###### [12 - Error messages](#Error)
+###### [13 - Trying to find a solution](#Solution)
+###### [14 - Updating the voting app on the script](#Updating)
+###### [15 - Remove the PV](#PV)
+###### [16 - Delete everything and start again](#Again)
+###### [17 - Scheduling](#Scheduling)
+###### [18 - Add Ingress](#Ingress)
+###### [19 - Install Cert-manager and Jetstack (for gandi)](#Cert-manager)
+###### [20 - Creation of a Gandi secret](#Gsecret)
+###### [21 - Install cert-manager webhook for gandi](#Webhook)
+###### [22 - Creation of secret role and binding for webhook](#Binding)
+###### [23 - Check the certificate](#Certificate)
+###### [24 - How to get a certificate Summary](#Summary)
+###### [25 - Executive summary](#ExecSummary)
+###### [26 - Technical Architecture Document of deployed infrastructure](#DAT)
+###### [27 - Check consumption](#Consumption)
+
+<div id='Scrum'/>  
+
+### 0. Scrum quotidien
+
+Scrum Master = Me, myself and I
+Daily personnal reactions with reports and designations of first tasks for the day.
+
+Frequent meeting with other coworkers to study solutions to encountered problems together.
+
+[scrums](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Plans_et_demarches/Scrum.md)
+
+[&#8679;](#top)
+
+<div id='Docs'/>  
+
+#### **Kubernetes, AKS and Azure Pipelines doc reading**
+Lecture des documentations afin de déterminer les fonctionnements, prérequis et outils/logiciels nécessaires pour remplir les différentes tâches du Brief 7.
+
+[&#8679;](#top)  
+
+<div id='Topology'/>  
+
+#### **Architecture Topology**
+Infrastructure Plannifiée
+
+*Schéma réalisé dans le cas plus général où les pods ne sont pas dans le même node.*
+*Les pods sont schématisés par un seul objet même s'ils peuvent représenter plusieurs réplicas.*
+
+```mermaid
+flowchart TD
+
+user(Utilisateurs)
+web{Internet}
+    subgraph AZ [AZURE]
+        
+        subgraph Cluster [Cluster Kubernetes]
+            cluster{{Cluster IP}}
+            Nginx{{Ingress}}
+
+            subgraph n1 [Node 1]
+                KT-temp1((Redis))
+            end
+
+            subgraph n2 [Node 2]
+                KT-temp2((Voting App))
+            end
+        end
+
+        subgraph BDD [Stockage Redis]
+            Stock[(Persistent Volume Claim)]
+        end
+
+    end
+
+
+KT-temp1 -.-> Stock
+user -.-> |web| web -.-> |web| Nginx
+KT-temp1 <--> cluster <--> KT-temp2
+Nginx <--> cluster
+
+    classDef rouge fill:#faa,stroke:#f66,stroke-width:3px,color:#002;
+    class Cluster, rouge;
+    classDef bleu fill:#adf,stroke:#025,stroke-width:4px,color:#002;
+    class AZ, bleu;
+    classDef fuschia fill:#f0f,stroke:#c0d,stroke-width:2px,color:#003;
+    class BDD, fuschia;
+    classDef vert fill:#ad5,stroke:#ad5,stroke-width:2px,color:#003;
+    class cluster,Nginx, vert;
+    classDef rose fill:#faf,stroke:#faf,stroke-width:2px,color:#003;
+    class Stock, rose;
+    classDef jaune fill:#fe5,stroke:#fe5,stroke-width:2px,color:#003,stroke-dasharray: 5 5;
+    class user, jaune;
+    classDef blanc fill:#eff,stroke:#eff,stroke-width:2px,color:#003;
+    class web, blanc;
+    classDef gris fill:#bab,stroke:#bab,stroke-width:2px,color:#003;
+    class n1,n2, gris;
+    classDef bleugris fill:#bbe,stroke:#bbe,stroke-width:2px,color:#003;
+    class KT-temp1,KT-temp2, bleugris;
+
+```
+
+[&#8679;](#top)  
+
+<div id='Ressources'/>  
+
+#### **Resource List**
+
+-----------
+| Ressources | Cluster AKS | Redis |  Voting App |
+| :--------: | :--------: | :--------: | :--------: |
+| Azure service | ✓ | ✓ | ✓ |
+| Azure DevOps | ✓ | ✓ | ✓ |
+| ressource groupe | ✓ |✓ | ✓ |
+| SSH (port) | N/A | 6379 | 80 |
+| CPU | N/A | 100m-250m | 100m-250m |
+| Mémoire | N/A | 128mi-256mi | 128mi-256mi |
+| Image | N/A | redis:latest  | simplonasa/azure_voting_app:v1.0.11 |
+| Load Balancer | N/A | ✓ puis ✗ | ✓ |
+| ClusterIP | N/A | ✗ puis ✓ | ✗ |
+| Kebernetes secret | ✓ | ✓ | ✓ |
+| Storage secret | ✓ | ✓ | ✓ |
+| Storage account (Standard LRS) | N/A | ✓ | ✓ |
+| Persistent Volume | N/A | ✓ | ✗ |
+| Persistent Vol. Claim (3Gi)| N/A | ✓ | ✗ |
+| Ingress | ✓ | ✗ | ✓ |
+| Nginx | ✓ | ✗ | ✗ |
+| DNS | ✓ | N/A | ✓ |
+| Cert-manager | N/A | N/A | v1.10.1 |
+| Certificat TLS | N/A | N/A | ✓ |
+
+
+ID Subscription : 
+a1f74e2d-ec58-4f9a-a112-088e3469febb
+
+[&#8679;](#top)  
+
+<div id='RG'/>  
+
+### **Creation of a resource group**
 
 ```bash
 az group create --location francecentral --name b7duna
 ```
 
-<!-- ## 2. Creation of a storage account (standard GRS)
+[&#8679;](#top)
 
-```bash
-az storage account create --name b7dstoracc --resource-group b7duna --sku Standard_GRS
-``` -->
+<div id='Storacc'/>  
 
-## 3. Creation of the AKS Cluster (with SSH keys generated)
+### **Creation of a storage account (standard GRS)**
+
+I learned that Storage Account, PV creations and bindings aren't necessary, with the right settings, Kubernetes is totally capable of handling it by itself and more reliably than human hand.
+
+[&#8679;](#top)
+
+<div id='AKS'/>  
+
+### **Creation of the AKS Cluster (with SSH keys generated)**
 
 ```bash
 az aks create -g b7duna -n AKSClusterDuna --enable-managed-identity --node-count 2 --enable-addons monitoring --enable-msi-auth-for-monitoring  --generate-ssh-keys
 ```
 
-## 4. Connecting the AKS Cluster and Azure
+[&#8679;](#top)
+
+<div id='Connecting'/>  
+
+### **Connecting the AKS Cluster and Azure**
 
 ```bash
 az aks get-credentials --resource-group b7duna --name AKSClusterDuna
 ```
 
-## 5. Creation of the redis secret
+[&#8679;](#top)
+
+<div id='RedSecret'/>  
+
+### **Creation of the redis secret**
 
 ```bash
 kubectl create secret generic redis-secret-duna --from-literal=username=devuser --from-literal=password=password_redis_154
 ```
 
-<!-- ## 6. Creation of the storage account secret
+[&#8679;](#top)
 
-```bash
-kubectl create secret generic storage-secret --from-literal=azurestorageaccountname=b7dstoracc --from-literal=azurestorageaccountkey=Ha/rrRrMwoLotpOK1wT5a1dphjPgfa0z9NZjf7W/1veO6nhHgNtzvjFyIK+y1oBy+I92/y73CPVp+AStu1jQQQ==
-``` -->
+<div id='DevOps'/>  
 
-## 7. Connecting to Azure DevOps Pipelines
+### **Connecting to Azure DevOps Pipelines**
 
 First I went to Azure DevOps, created a project and clicked on Pipelines : <https://dev.azure.com/dlerouxext/b7duna/_build>  
 Then I added a service connection (Project settings > service connections > add > kubernetes).
 
 ![service_connection2](https://user-images.githubusercontent.com/108001918/210520992-0536c68a-17b6-4b8a-91e4-2bccb2159e75.png)
 
-## 8. Creation of a test pipeline
+[&#8679;](#top)
+
+<div id='Pipeline'/>  
+
+### **Creation of a test pipeline**
 
 I created a new pipeline and provided its location (Github.yaml) and the repository (Brief_7). Then I chose a starter template and used the assistant to add a Kubectl task.  
 Finally I saved it and ran it.
 
 ![pipeline_job_run](https://user-images.githubusercontent.com/108001918/210521068-ec3cc98c-e2ab-46a7-9d46-3cadd39a3c37.png)
 
-## 9. Checks and tests
+[&#8679;](#top)
+
+<div id='Checks'/>  
+
+### **Checks and tests**
 
 In order to understand how the pipeline works and the path used on the pipeline's environment vm, I used the commands ```pwd``` and ```ls -la``` on my pipeline script :
 
@@ -60,7 +228,11 @@ In order to understand how the pipeline works and the path used on the pipeline'
 
 It allowed me to know which path I needed to put to refer the .yaml file to use in the pipeline.
 
-## 10. Error messages
+[&#8679;](#top)
+
+<div id='Error'/>  
+
+### **Error messages**
 
 I received an error at the end of the job. It seems that Azure does not have the rights to create a persistent volume and the PV claim.
 
@@ -76,7 +248,11 @@ Alfred tried to bind an admin role he created to the Azure service account Defau
 
 ![Error_pipeline2](https://user-images.githubusercontent.com/108001918/210545569-b0ce0e74-e461-4407-b3fc-69c6ecfbaad5.png)
 
-## 11. Trying to find a solution
+[&#8679;](#top)
+
+<div id='Solution'/>  
+
+### **Trying to find a solution**
 
 I recreated my Kubernetes Service Connection and checked "Use cluster admin credentials". As Alfred changed the credentials previously, when I reran my pipeline I had no rights issue.
 
@@ -100,12 +276,20 @@ kubectl get events --sort-by='.metadata.creationTimestamp'
 kubectl get events --sort-by='.metadata.creationTimestamp' -w
 ```
 
-## 12. Updating the voting app on the script
+[&#8679;](#top)
+
+<div id='Scrum'/>  
+
+### **Updating the voting app on the script**
 
 I changed the previous version of the voting app with the new one : simplonasa/azure_voting_app:v1.0.11 and my container for the Voting app was successfully created.
 It then displayed in CrashLoopBackOff because redis was not created but now I just needed to find a solution for redis and the PV/PVC for everything to work properly.
 
-## 13. Creation of a storage share for the storage account
+[&#8679;](#top)
+
+<div id='Updating'/>  
+
+### **Creation of a storage share for the storage account**
 
 I checked if I had a storage share for my storage account with the command :
 
@@ -130,7 +314,11 @@ kubectl get services
 As everything was running perfectly, I used the IP address to connect to the Voting App. It worked fine. Then I deleted the redis pod ```kubectl delete pod redis-service``` and typed ```kubcetl get pods```. The redis service was automatically renewed.  
 Finally, I refreshed the voting app page and found out that the votes count had not been reset. All the containers were working and the persistent volume as well.
 
-## 14. Remove the PV
+[&#8679;](#top)
+
+<div id='PV'/>  
+
+### **Remove the PV**
 
 As Kubernetes automatically creates a PV when a PVC is created, I removed the PV from my script and decided to start again without creating the storage account, the storage share to verify if Kubernetes would do everything automatically. Then I ran the pipeline.
 
@@ -138,11 +326,15 @@ When I searched for the PVC and the pods with kubectl commands on Azure CLI, the
 
 ![not_working_AGAIN](https://user-images.githubusercontent.com/108001918/210743380-128d1882-c8ad-45f6-a2c4-4f159585c20e.png)
 
-After some researches _(and screechs)_, I modified the ```volumes``` part on the redis container with the persistentVolumeClaim and removed the references to the PV. I updated it as well in the ```volumeMounts``` part. Finally, I relaunched the pipeline and the job ran successfully.
+After some researches *(and screechs)*, I modified the ```volumes``` part on the redis container with the persistentVolumeClaim and removed the references to the PV. I updated it as well in the ```volumeMounts``` part. Finally, I relaunched the pipeline and the job ran successfully.
 
-## 15. Delete everything and start again
+[&#8679;](#top)
 
-I decided to delete my resource groups to try once again from scratch and check if it also worked when Alfred and Bryan weren't watching _(just in case the code gets pressured to work when they are present, we never know)_.
+<div id='Again'/>  
+
+### **Delete everything and start again**
+
+I decided to delete my resource groups to try once again from scratch and check if it also worked when Alfred and Bryan weren't watching *(just in case the code gets pressured to work when they are present, we never know)*.
 
 ![pipeline_working](https://user-images.githubusercontent.com/108001918/210748762-a67a9983-bf18-480d-af1b-de5107fcc2b8.png)
 
@@ -152,9 +344,11 @@ I decided to delete my resource groups to try once again from scratch and check 
 
 ![persistent_working](https://user-images.githubusercontent.com/108001918/210750285-4f2fea62-585e-41d3-89f7-d9529023eec3.png)
 
------
+[&#8679;](#top)
 
-## 16. Scheduling
+<div id='Scheduling'/>  
+
+### **Scheduling**
 
 [Scheduling a pipeline](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/scheduled-triggers?view=azure-devops&tabs=yaml)
 
@@ -166,7 +360,11 @@ Then I verified that the pipeline job was a success.
 
 ![scheduling_pipeline_success](https://user-images.githubusercontent.com/108001918/210757983-4f4958a2-c718-46ec-9083-f622e9f4483f.png)
 
-## 17. Add Ingress
+[&#8679;](#top)
+
+<div id='Ingress'/>  
+
+### **Add Ingress**
 
 As the scheduling was working, I decided to install Ingress to be able to access to the voting app from an url http I chose (and that i would later link to my dns record).  
 
@@ -189,7 +387,11 @@ Finally I connected to the Voting app using smoothie.simplon-duna.space and it w
 
 ![dns_records](https://user-images.githubusercontent.com/108001918/210812132-630cc498-504f-4b29-b725-66d8f442ef4f.png)
 
-## 18. Install Cert-manager and Jetstack (for gandi)
+[&#8679;](#top)
+
+<div id='Cert-manager'/>  
+
+### **Install Cert-manager and Jetstack (for gandi)**
 
 [Jetstack](https://github.com/bwolf/cert-manager-webhook-gandi)
 
@@ -207,20 +409,28 @@ helm install cert-manager jetstack/cert-manager --namespace cert-manager --creat
 
 <img width="1820" alt="Cert_manager" src="https://user-images.githubusercontent.com/108001918/210761309-393e496c-ff14-41e2-b02a-7b65fb7baeb7.png">
 
-## 19. Gandi secret
+[&#8679;](#top)
+
+<div id='Gsecret'/>  
+
+### **Creation of a Gandi secret**
 
 After cert-manager was installed, i created a secret for Gandi with the token from my gandi dns.  
-_To check the token > settings from account > account and security > security._
+*To check the token > settings from account > account and security > security.*
 
 ```bash
-kubectl create secret generic gandi-credentials --from-literal=api-token='yRAidcmI81TWiAX1CaYNTJiN'
+kubectl create secret generic gandi-credentials --from-literal=api-token='[API-TOKEN]'
 ```
 
 The gandi secret was created in the default namespace because it needs to be accessed in the same namespace as the issuer (which is in the default namespace).
 
 ![gandi-secret](https://user-images.githubusercontent.com/108001918/210763575-22af59d1-812b-43fa-9017-9b9ff20b7b15.png)
 
-## 20. Install cert-manager webhook for gandi
+[&#8679;](#top)
+
+<div id='Webhook'/>  
+
+### **Install cert-manager webhook for gandi**
 
 Then i installed cert-manager-webhook for gandi so that the certificate could be linked to my DNS. I put the webhook for gandi in the cert-manager namespace because cert-manager was installed in the cert-manager namespace.
 
@@ -228,7 +438,11 @@ Then i installed cert-manager-webhook for gandi so that the certificate could be
 helm install cert-manager-webhook-gandi --repo https://bwolf.github.io/cert-manager-webhook-gandi --version v0.2.0 --namespace cert-manager --set features.apiPriorityAndFairness=true  --set logLevel=6 --generate-name
 ```
 
-## 21. Creation of secret role and binding for webhook
+[&#8679;](#top)
+
+<div id='Binding'/>  
+
+### **Creation of secret role and binding for webhook**
 
 I gave role access and created a rolebinding for the webhook (to bind gandi and the cert-manager).
 
@@ -250,7 +464,11 @@ And pasted it on the following command :
 kubectl create rolebinding --role=access-secret default-to-secrets --serviceaccount=cert-manager:cert-manager-webhook-gandi-1672931110
 ```
 
-## 22. Check the certificate
+[&#8679;](#top)
+
+<div id='Certificate'/>  
+
+### **Check the certificate**
 
 Then i checked the status of my certificate with several commands :
 
@@ -272,25 +490,29 @@ kubectl describe challenges
 
 ![get_certificate](https://user-images.githubusercontent.com/108001918/210973322-b97c4836-8856-4fa1-9beb-ffb6182ff4a0.png)
 
------
+[&#8679;](#top)
 
-## __USEFULL COMMANDS__
+<div id='Summary'/>  
 
-#### update AKS with autoscale
+### **How to get a certificate Summary**
 
-```bash
-az aks update --resource-group b7duna --name KlusterDuna --enable-cluster-autoscaler --min-count 1 --max-count 8
-```
+First, apply Ingress' prerequisites and Ingress without the hosts nor TLS (DO NOT DELETE, only comment).
 
-#### Autoscaling
+Then, prepare Gandi with the IP adress from Ingress. Then create the gandi secret.
 
-[Autoscaling](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+Then, resettle the Host and TLS in Ingress ***DO NOT DELETE***, reapply the file. Then, install the webhook and give role access and rolebinding.
 
-[Autoscaling Walkthrough](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale-walkthrough/)
+Finally, apply the Issuer yaml file and ONLY THEN, apply the certificate file (certif-space-com.yaml).
 
-----
+[ingress.yaml](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Infra_K8s/ingress.yaml) -> [issuer.yaml](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Infra_K8s/issuer.yaml) -> [certif-space-com.yaml](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Infra_K8s/certif-space-com.yaml)
 
-## To create an alias for a command on azure CLi
+[&#8679;](#top)
+
+<div id='UsefullCommands'/>  
+
+### **USEFULL COMMANDS**
+
+### **To create an alias for a command on azure CLi**
 
 alias [WhatWeWant]="[WhatIsChanged]"  
 
@@ -300,7 +522,9 @@ _Example :_
 alias k="kubectl"
 ```
 
-## To deploy resources with yaml file
+[&#8679;](#top)
+
+### **To deploy resources with yaml file**
 
 kubectl apply -f [name-of-the-yaml-file]
 
@@ -310,7 +534,9 @@ _Example :_
 kubectl apply -f azure-vote.yaml
 ```
 
-## To check resources
+[&#8679;](#top)
+
+### **To check resources**
 
 ```bash
 kubectl get nodes
@@ -338,7 +564,9 @@ _Example :_
 kubectl get services --namespace [namespace's-name]
 ```
 
-## To describe resources
+[&#8679;](#top)
+
+### **To describe resources**
 
 ```bash
 kubectl describe nodes
@@ -376,7 +604,9 @@ _To list all events from a specific pod :_
 kubectl get events --field-selector [involvedObject].name=[podsname]
 ```
 
-## To delete resources
+[&#8679;](#top)
+
+### **To delete resources**
 
 ```bash
 kubectl delete deploy --all
@@ -386,7 +616,9 @@ kubectl delete pv --all
 az group delete --name [resourceGroupName] --yes --no-wait
 ```
 
-## To create a repository Helm and install Jetstack
+[&#8679;](#top)
+
+### **To create a repository Helm and install Jetstack**
 
 _To create the repository and install Jetstack :_
 
@@ -400,7 +632,10 @@ _To check the repository created and Jetstack version :_
 helm search repo jetstack
 ```
 
-## To create a role for Gandi's secret and bind it to the webhook
+[&#8679;](#top)
+
+### **To create a role for Gandi's secret and bind it to the webhook**
+
 _To create the role :_
 
 ```bash
@@ -425,7 +660,9 @@ _Example :_
 kubectl create rolebinding --role=access-secrets default-to-secrets --serviceaccount=cert-manager:cert-manager-webhook-gandi-1665665029
 ```
 
-## To check TLS certificate in request order
+[&#8679;](#top)
+
+### **To check TLS certificate in request order**
 
 ```bash
 kubectl get certificate
@@ -434,7 +671,9 @@ kubectl get order
 kubectl get challenge
 ```
 
-## To describe TLS certificate in request order
+[&#8679;](#top)
+
+### **To describe TLS certificate in request order**
 
 ```bash
 kubectl describe certificate
@@ -443,19 +682,25 @@ kubectl describe order
 kubectl describe challenge
 ```
 
-## Get the IP address to point the DNS to nginx
+[&#8679;](#top)
+
+### **Get the IP address to point the DNS to nginx**
 
 ```bash
-k get ingress
+kubectl get ingress
 ```
 
-## Activate the autoscaler on an existing cluster
+[&#8679;](#top)
+
+### **Activate the autoscaler on an existing cluster**
 
 ```bash
 az aks update --resource-group b6duna --name AKSClusterd2 --enable-cluster-autoscaler --min-count 1 --max-count 8
 ```
 
-## To check the auto scaling creation
+[&#8679;](#top)
+
+### **To check the auto scaling creation**
 
 ```bash
 get HorizontalPodAutoscaler
@@ -467,13 +712,17 @@ _Example of how the results will display :_
 horizontalpodautoscaler.autoscaling/scaling-voteapp created
 ```
 
-## To check Webhook configuration
+[&#8679;](#top)
+
+### **To check Webhook configuration**
 
 ```bash
 kubectl get ValidatingWebhookConfiguration -A
 ```
 
-## Delete Webhook configuration for a role
+[&#8679;](#top)
+
+### **Delete Webhook configuration for a role**
 
 ```bash
 kubectl delete -A ValidatingWebhookConfiguration [rolename]  
@@ -484,5 +733,37 @@ _Example :_
 ```bash
 kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
 ```
+
+[&#8679;](#top)
+
+<div id='ExecSummary'/>  
+
+### **Executive summary**
+
+[Cf. document "Executive_summary_Dun"]()
+
+[&#8679;](#top)
+
+<div id='DAT'/> 
+
+### **Technical Architecture Document of deployed infrastructure**
+
+[Cf. document "DAT.md"]()
+
+[&#8679;](#top)
+
+<div id='Consumption'/> 
+
+### **Check consumption**
+
+I tried to check the consumption for the infrastructure deployed and tests I realized, but it seems that I do not have the rights on the subscription. Therefore, I cannot provide the costs for this Brief.
+
+```Bash
+az consumption usage list --subscription a1f74e2d-ec58-4f9a-a112-088e3469febb
+```
+
+![costs](https://user-images.githubusercontent.com/108001918/211002170-0674e200-e973-4cd2-9a70-12ffa38375cd.png)
+
+[&#8679;](#top)
 
 </div>
