@@ -748,7 +748,7 @@ kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
 
 ### **Technical Architecture Document of deployed infrastructure**
 
-[Cf. document "DAT.md"]()
+[Cf. document "DAT.md"](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/DAT.md)
 
 [&#8679;](#top)
 
