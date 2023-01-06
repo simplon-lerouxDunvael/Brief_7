@@ -199,7 +199,7 @@ Since my ingress was working and i could connect in http to my voting app, I ins
 helm repo add jetstack https://charts.jetstack.io
 ```
 
-Then, I installed cert-manager ([To check cert-manager last version to install](https://cert-manager.io/docs/installation/supported-releases/)).
+Then, I installed my cert-manager to configure my certificate ([To check cert-manager last version to install](https://cert-manager.io/docs/installation/supported-releases/)).
 
 ```bash
 helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true --version v1.10.1 --set 'extraArgs={--dns01-recursive-nameservers=8.8.8.8:53\,1.1.1.1:53}'
@@ -213,14 +213,16 @@ After cert-manager was installed, i created a secret for Gandi with the token fr
 _To check the token > settings from account > account and security > security._
 
 ```bash
-kubectl create secret generic gandi-credentials --namespace cert-manager --from-literal=api-token='yRAidcmI81TWiAX1CaYNTJiN'
+kubectl create secret generic gandi-credentials --from-literal=api-token='yRAidcmI81TWiAX1CaYNTJiN'
 ```
+
+The gandi secret was created in the default namespace because it needs to be accessed in the same namespace as the issuer (which is in the default namespace).
 
 ![gandi-secret](https://user-images.githubusercontent.com/108001918/210763575-22af59d1-812b-43fa-9017-9b9ff20b7b15.png)
 
 ## 20. Install cert-manager webhook for gandi
 
-Then i installed cert-manager-webhook for gandi.
+Then i installed cert-manager-webhook for gandi so that the certificate could be linked to my DNS. I put the webhook for gandi in the cert-manager namespace because cert-manager was installed in the cert-manager namespace.
 
 ```bash
 helm install cert-manager-webhook-gandi --repo https://bwolf.github.io/cert-manager-webhook-gandi --version v0.2.0 --namespace cert-manager --set features.apiPriorityAndFairness=true  --set logLevel=6 --generate-name
@@ -234,10 +236,10 @@ I gave role access and created a rolebinding for the webhook (to bind gandi and 
 kubectl create role access-secret --verb=get,list,watch,update,create --resource=secrets
 ```
 
-Then i copied the webhook number with :
+Then i copied the webhook number from the cert-manager namespace with :
 
 ```Bash
-k get secrets -n cert-manager
+kubectl get secrets -n cert-manager
 ```
 
 ![webhook](https://user-images.githubusercontent.com/108001918/210821499-2c9231b6-05a8-4a2a-964b-11c8792a9dbd.png)
@@ -248,11 +250,27 @@ And pasted it on the following command :
 kubectl create rolebinding --role=access-secret default-to-secrets --serviceaccount=cert-manager:cert-manager-webhook-gandi-1672931110
 ```
 
-## 22.
+## 22. Check the certificate
 
-k get orders
-k describe orders
-k describe challenges
+Then i checked the status of my certificate with several commands :
+
+```Bash
+kubectl get certificate
+```
+
+```Bash
+kubectl get orders
+```
+
+```Bash
+kubectl describe orders
+```
+
+```Bash
+kubectl describe challenges
+```
+
+![get_certificate](https://user-images.githubusercontent.com/108001918/210973322-b97c4836-8856-4fa1-9beb-ffb6182ff4a0.png)
 
 -----
 
