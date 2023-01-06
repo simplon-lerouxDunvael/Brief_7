@@ -1,14 +1,3 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
-trigger:
-- main
-
-pool:
-  vmImage: ubuntu-latest
-
 schedules:
   - cron: "0 * * * *" # cron syntax defining the schedule - every hour at 0'
     displayName: Hourly main schedule # friendly name given to a specific schedule
@@ -18,7 +7,13 @@ schedules:
 #    exclude: # which branches to exclude from the schedule
 #    - [string]
     always: false # whether to always run the pipeline or only if there have been source code changes since the last successful scheduled run. The default is false.
-  
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
 steps:
 
 - task: CmdLine@2
@@ -43,4 +38,3 @@ steps:
     secretType: 'dockerRegistry'
     containerRegistryType: 'Azure Container Registry'
   displayName: 'Run Voting App deployment'
-  
