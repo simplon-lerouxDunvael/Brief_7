@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-# Code for Azure Pipeline
-
-=======
->>>>>>> 0769b6246f4ceeef803880faece5f03d7fa90c90
 schedules:
   - cron: "0 * * * *" # cron syntax defining the schedule - every hour at 0'
     displayName: Hourly main schedule # friendly name given to a specific schedule
