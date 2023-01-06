@@ -21,7 +21,6 @@ steps:
     script: |
       cat /home/vsts/version/version.vote
       mkdir /home/vsts/version
-      mkdir /home/vsts/git
       pwd
       ls -la
       TESTVAR=$(curl 'https://hub.docker.com/v2/repositories/simplonasa/azure_voting_app/tags' | jq '."results"[0]["name"]')
@@ -34,7 +33,7 @@ steps:
     kubernetesServiceEndpoint: 'Kubernetes Service Connection'
     command: 'apply'
     useConfigurationFile: true
-    configuration: '/home/vsts/work/1/s/vote-renew.yaml'
+    configuration: '/home/vsts/work/1/s/vote_renew.yaml'
     secretType: 'dockerRegistry'
     containerRegistryType: 'Azure Container Registry'
   displayName: 'Run Voting App s version renewal'
