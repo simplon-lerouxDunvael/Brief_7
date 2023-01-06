@@ -34,7 +34,7 @@ steps:
     kubernetesServiceEndpoint: 'Kubernetes Service Connection'
     command: 'apply'
     useConfigurationFile: true
-    configuration: '/home/vsts/work/1/s/Part_2/azure-vote.yaml'
+    configuration: '/home/vsts/work/1/s/vote-renew.yaml'
     secretType: 'dockerRegistry'
     containerRegistryType: 'Azure Container Registry'
-  displayName: 'Run Voting App deployment'
+  displayName: 'Run Voting App s version renewal'
