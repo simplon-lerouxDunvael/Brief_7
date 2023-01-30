@@ -740,7 +740,7 @@ kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
 
 ### **Executive summary**
 
-[Cf. document "Executive_summary_Dun"]()
+[Cf. document "Executive_summary_Dun"](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/Executive_summary.docx)
 
 [&#8679;](#top)
 
