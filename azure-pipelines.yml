@@ -42,7 +42,7 @@ steps:
         # Update the secret with the new version number
         kubectl patch secret version-secret -p "{\data\":{\"version\":\"$TESTVAR\"}}"
       else
-        echo "The version in the secret is the same as the verison found"
+        echo "The version in the secret is the same as the version found"
       fi
 
 - task: Kubernetes@2
