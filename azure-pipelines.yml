@@ -55,4 +55,4 @@ steps:
     secretType: 'dockerRegistry'
     containerRegistryType: 'Azure Container Registry'
   displayName: 'Run Voting App s version renewal'
-  condition: and(succeeded), ne(variables['TESTVAR'], variables['SECRET_VALUE']))
+  condition: and(succeeded(), ne(variables['TESTVAR'], variables['SECRET_VALUE']))
