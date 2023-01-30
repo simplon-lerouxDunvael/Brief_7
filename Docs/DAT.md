@@ -1,6 +1,6 @@
 # Technical Architectural Document
 ## Functions requirements
-Users needs to be able to vote and reset votes on the Voting App application and Voting App needs to be highly available.
+Les utilisateurs doivent pouvoir voter sur l’application Voting App (hautement disponible, sécurisée et accessible via https et nom de domaine) qui doit être mise à jour automatiquement toutes les heures.
 
 ## Non-functionnal Needs
 | Element | Value | Comments |
@@ -10,6 +10,7 @@ Users needs to be able to vote and reset votes on the Voting App application and
 | Gateway | Ingress | Integrated in AKS |
 | BDD | Redis | - Good performance, low latency <br> - Flexible data structures <br> - Open Source |
 | Application | VotingApp | Required and needs to be able to scale horizontally and have a single domain name |
+| Azure DevOps Pipeline | Deployment | To check and update the Voting App version |
 
 ## Function Schematic
 ![ ](https://github.com/simplon-lerouxDunvael/Brief_6/blob/main/Pics/DAT%20Diagram%201.png)
@@ -19,6 +20,7 @@ Users needs to be able to vote and reset votes on the Voting App application and
 | --- | ---- | ---------------- |
 | Azure | Provider | Public Cloud |
 | AKS | Kubernetes Cluster | Cluster K8s Azure |
+| Azure DevOps | Pipeline Manager | CI/CD |
 
 ## Applicative Schematic
 ![ ](https://github.com/simplon-lerouxDunvael/Brief_6/blob/main/Pics/DAT_Diagram_2.png)
@@ -31,15 +33,20 @@ Users needs to be able to vote and reset votes on the Voting App application and
 | Pods votingApp | Service votingApp | TCP | 80 |
 | Service votingApp | Service Redis | TCP | 6379 |
 | Service Redis  | Pod Redis | TCP | 6379 |
+| Azure DevOps Pipeline | Github connection services | ✗  | ✗  |
+| Azure DevOps Pipeline | Kubenetes connection services | ✗  | ✗  |
+
 ## Architecture Schematic
-![ ](https://github.com/simplon-lerouxDunvael/Brief_6/blob/main/Pics/Cloud%20Architecture%202.png)
+
+# __A REFAIRE__
+
 ## Architecture Decisions
 | Topic | Content |
 | ----------------------- | ------------------------ |
-| Architecture Decision | Use of a Gateway |
-| Problem | What Gateway to use? |
-| Hypothesis | Use of Application Gateway |
-| Alternatives | A: Use of Azure Application Gateway <br> B: Use of Ingress in Kubernetes |
-| Decision | Option B is selected |
-| Reasoning | 1- Easier potential transition to another public cloud provider <br> 2- Less dependant on Azure specific infrastructure and services |
-| Implication | Generation and incorporation of the TLS certificate within Kubernetes |
+| Architecture Decision | Use of a pipeline |
+| Problem | Which pipeline Manager to use? |
+| Hypothesis | Use of Azure qualified pipeline |
+| Alternatives | A: Use of Gitlab CI Actions <br> B: Use of Jenkins <br> C: Use of Azure Devops |
+| Decision | Option C is selected |
+| Reasoning | 1- Better integration with Azure Cloud Services (AKS) <br> 2- No need of external VMs for Pipeline Management |
+| Implication | Incorporation of code in Azure DevOps Pipeline and deployment of infrastructure |
