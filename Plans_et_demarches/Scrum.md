@@ -47,3 +47,49 @@ Objectifs :
 * Faire le DAT
 * Faire l'executive summary
 * Finir le brief ? XD
+
+Lundi 30/01/23  
+Résultats de la veille :
+
+* 
+
+Objectifs :
+
+* 
+
+Mardi 31/01/23  
+Résultats de la veille :
+
+* 
+
+Objectifs :
+
+* 
+
+Mercredi 01/02/23  
+Résultats de la veille :
+
+* 
+
+Objectifs :
+
+* 
+
+Jeudi 02/02/23  
+Résultats de la veille :
+
+* 
+
+Objectifs :
+
+* 
+
+Vendredi 03/02/23  
+Résultats de la veille :
+
+* 
+
+Objectifs :
+
+* 
+
