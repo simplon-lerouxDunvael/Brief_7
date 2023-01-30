@@ -51,11 +51,15 @@ Objectifs :
 Lundi 30/01/23  
 Résultats de la veille :
 
-* 
+* Pipeline fonctionnelle (met à jour la nouvelle version de l'app voting)
+* TLS installé et fonctionnel
 
 Objectifs :
 
-* 
+* Réaliser le budget préventionnel sur un an
+* Finir le plan d'action
+* Faire le DAT
+* Faire l'executive summary
 
 Mardi 31/01/23  
 Résultats de la veille :
