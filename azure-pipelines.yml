@@ -16,7 +16,13 @@ pool:
 
 steps:
 
-- task: CmdLine@2
+- task: Kubernetes@1
+  inputs:
+    connectionType: 'Kubernetes Service Connection'
+    kubernetesServiceEndpoint: 'Kubernetes Service Connection'
+    command: 'login'
+
+- task: CmdLine@1
   inputs:
     script: |
       cat /home/vsts/version/version.vote
@@ -27,7 +33,19 @@ steps:
       echo "$TESTVAR"|sed 's/^.//;s/.$//' >/home/vsts/version/version.vote
       cat /home/vsts/version/version.vote
 
-- task: Kubernetes@1
+      # Retrieve the value of the secret 
+      SECRET_VALUE=$(Kubectl get secret version-secret -o jsonpath={.data.version} 2>/dev/null)
+      if [ $? -ne 0 ]; then
+        # Secret does not exist
+        kubectl create secret generic version-secret --from-litteral=version=$TESTVAR
+      elif [ "$TESTVAR" != "$SECRET_VALUE" ]; then
+        # Update the secret with the new version number
+        kubectl patch secret version-secret -p "{\data\":{\"version\":\"$TESTVAR\"}}"
+      else
+        echo "The version in the secret is the same as the verison found"
+      fi
+
+- task: Kubernetes@2
   inputs:
     connectionType: 'Kubernetes Service Connection'
     kubernetesServiceEndpoint: 'Kubernetes Service Connection'
@@ -37,3 +55,4 @@ steps:
     secretType: 'dockerRegistry'
     containerRegistryType: 'Azure Container Registry'
   displayName: 'Run Voting App s version renewal'
+  condition: and(succeeded), ne(variables['TESTVAR'], variables['SECRET_VALUE']))
