@@ -64,11 +64,15 @@ Objectifs :
 Mardi 31/01/23  
 Résultats de la veille :
 
-* 
+* Executive summary réalisé
+* DAT presque terminé (manque topologie)
+* Cost forecast débuté à rédiger
 
 Objectifs :
 
-* 
+* Finir le cost forecast et le DAT
+* Régler le problème de curl
+* Commencer la présentation marp
 
 Mercredi 01/02/23  
 Résultats de la veille :
