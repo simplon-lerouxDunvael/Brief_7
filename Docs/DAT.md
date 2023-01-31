@@ -13,7 +13,8 @@ Les utilisateurs doivent pouvoir voter sur l’application Voting App (hautement
 | Azure DevOps Pipeline | Deployment | To check and update the Voting App version |
 
 ## Function Schematic
-![ ](https://github.com/simplon-lerouxDunvael/Brief_6/blob/main/Pics/DAT%20Diagram%201.png)
+
+<img src="https://user-images.githubusercontent.com/108001918/215785382-d165ece4-818c-4f9b-818c-12ff59d6c6eb.png" width="350">
 
 ### Environment list
 | Nom | Type | Caractéristiques |
@@ -23,7 +24,8 @@ Les utilisateurs doivent pouvoir voter sur l’application Voting App (hautement
 | Azure DevOps | Pipeline Manager | CI/CD |
 
 ## Applicative Schematic
-![ ](https://github.com/simplon-lerouxDunvael/Brief_6/blob/main/Pics/DAT_Diagram_2.png)
+
+![application_function](https://user-images.githubusercontent.com/108001918/215785565-1c0a7fac-5c4d-46fb-8f0f-070392580336.png)
 
 ### Network Flux Matrix
 | Source | Destination | Protocol | Port |
@@ -38,7 +40,7 @@ Les utilisateurs doivent pouvoir voter sur l’application Voting App (hautement
 
 ## Architecture Schematic
 
-# __A REFAIRE__
+![pipeline_process](https://user-images.githubusercontent.com/108001918/215771546-dd5bb6bd-c13e-41b7-992f-ea0a3c0b75d8.png)
 
 ## Architecture Decisions
 | Topic | Content |
