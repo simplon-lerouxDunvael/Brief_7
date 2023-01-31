@@ -756,13 +756,21 @@ kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
 
 ### **Check consumption**
 
-I tried to check the consumption for the infrastructure deployed and tests I realized, but it seems that I do not have the rights on the subscription. Therefore, I cannot provide the costs for this Brief.
+I tried to check the consumption for the infrastructure deployed and tests I realized, but it seems that I do not have the rights on the subscription.
 
 ```Bash
 az consumption usage list --subscription a1f74e2d-ec58-4f9a-a112-088e3469febb
 ```
 
 ![costs](https://user-images.githubusercontent.com/108001918/211002170-0674e200-e973-4cd2-9a70-12ffa38375cd.png)
+
+So I decided to use the Azure Calculator in order to check the consumption of this brief's resources.  
+
+I calculated costs on several paying plans :
+
+- [Monthly (for 12 months)](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/Costs_forecast_monthly.xlsx)
+- [Yearly](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/Costs_forecast_1year.xlsx)
+- [Triennially](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/Costs_forecast_3years.xlsx)
 
 [&#8679;](#top)
 
