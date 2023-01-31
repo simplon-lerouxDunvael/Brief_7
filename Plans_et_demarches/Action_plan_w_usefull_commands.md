@@ -57,61 +57,9 @@ Lecture des documentations afin de déterminer les fonctionnements, prérequis e
 #### **Architecture Topology**
 Infrastructure Plannifiée
 
-*Schéma réalisé dans le cas plus général où les pods ne sont pas dans le même node.*
-*Les pods sont schématisés par un seul objet même s'ils peuvent représenter plusieurs réplicas.*
+![application_function](https://user-images.githubusercontent.com/108001918/215785565-1c0a7fac-5c4d-46fb-8f0f-070392580336.png)
 
-```mermaid
-flowchart TD
-
-user(Utilisateurs)
-web{Internet}
-    subgraph AZ [AZURE]
-        
-        subgraph Cluster [Cluster Kubernetes]
-            cluster{{Cluster IP}}
-            Nginx{{Ingress}}
-
-            subgraph n1 [Node 1]
-                KT-temp1((Redis))
-            end
-
-            subgraph n2 [Node 2]
-                KT-temp2((Voting App))
-            end
-        end
-
-        subgraph BDD [Stockage Redis]
-            Stock[(Persistent Volume Claim)]
-        end
-
-    end
-
-
-KT-temp1 -.-> Stock
-user -.-> |web| web -.-> |web| Nginx
-KT-temp1 <--> cluster <--> KT-temp2
-Nginx <--> cluster
-
-    classDef rouge fill:#faa,stroke:#f66,stroke-width:3px,color:#002;
-    class Cluster, rouge;
-    classDef bleu fill:#adf,stroke:#025,stroke-width:4px,color:#002;
-    class AZ, bleu;
-    classDef fuschia fill:#f0f,stroke:#c0d,stroke-width:2px,color:#003;
-    class BDD, fuschia;
-    classDef vert fill:#ad5,stroke:#ad5,stroke-width:2px,color:#003;
-    class cluster,Nginx, vert;
-    classDef rose fill:#faf,stroke:#faf,stroke-width:2px,color:#003;
-    class Stock, rose;
-    classDef jaune fill:#fe5,stroke:#fe5,stroke-width:2px,color:#003,stroke-dasharray: 5 5;
-    class user, jaune;
-    classDef blanc fill:#eff,stroke:#eff,stroke-width:2px,color:#003;
-    class web, blanc;
-    classDef gris fill:#bab,stroke:#bab,stroke-width:2px,color:#003;
-    class n1,n2, gris;
-    classDef bleugris fill:#bbe,stroke:#bbe,stroke-width:2px,color:#003;
-    class KT-temp1,KT-temp2, bleugris;
-
-```
+![pipeline_process](https://user-images.githubusercontent.com/108001918/215771546-dd5bb6bd-c13e-41b7-992f-ea0a3c0b75d8.png)
 
 [&#8679;](#top)  
 
@@ -756,13 +704,21 @@ kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
 
 ### **Check consumption**
 
-I tried to check the consumption for the infrastructure deployed and tests I realized, but it seems that I do not have the rights on the subscription. Therefore, I cannot provide the costs for this Brief.
+I tried to check the consumption for the infrastructure deployed and tests I realized, but it seems that I do not have the rights on the subscription.
 
 ```Bash
 az consumption usage list --subscription a1f74e2d-ec58-4f9a-a112-088e3469febb
 ```
 
 ![costs](https://user-images.githubusercontent.com/108001918/211002170-0674e200-e973-4cd2-9a70-12ffa38375cd.png)
+
+So I decided to use the Azure Calculator in order to check the consumption of this brief's resources.  
+
+I calculated costs on several paying plans :
+
+- [Monthly (for 12 months)](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/Costs_forecast_monthly.xlsx)
+- [Yearly](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/Costs_forecast_1year.xlsx)
+- [Triennially](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/Costs_forecast_3years.xlsx)
 
 [&#8679;](#top)
 
