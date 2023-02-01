@@ -722,4 +722,12 @@ I calculated costs on several paying plans :
 
 [&#8679;](#top)
 
+
+### **Pipeline issues**
+
+I found that i had issues with my pipeline that did not update the app version even though it was running.
+I added `set -x` (shows the process for every commands), `set -e` => to stop at the first error.
+
+[&#8679;](#top)
+
 </div>
