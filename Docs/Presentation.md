@@ -41,7 +41,54 @@ _color: black
 
 ---
 
-## 1 - Ressources utilisées  
+## 1 - Projet
+
+
+
+<!--
+_color: black
+-->
+
+---
+
+## 2 - Topologie
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![width:700px height:500px](https://user-images.githubusercontent.com/108001918/215785565-1c0a7fac-5c4d-46fb-8f0f-070392580336.png)
+
+<!--
+_color: black
+-->
+
+---
+
+## 3 - Déploiement & maj de la Voting App via Azure DevOps Pipeline
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+![pipeline_process](https://user-images.githubusercontent.com/108001918/215771546-dd5bb6bd-c13e-41b7-992f-ea0a3c0b75d8.png)
+  
+<!--
+_backgroundColor: black
+_color: black
+-->
+
+--- 
+
+## 4 - Outils, logiciels et ressources 
+
+
+
+<!--
+_color: black
+-->
+
+---
+
+
+<!--
+_color: black
+-->
+
+--- 
 
 * Documentation Microsoft Azure
 * Documentation Kubernetes
@@ -58,44 +105,9 @@ _color: black
 
 ---
 
-## 2 - Topologie
+## 5 - Compréhension des outils et des logiciels
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![width:500px height:500px](https://user-images.githubusercontent.com/108001918/196372669-f0cf2f50-dd24-4ff1-88b6-ed350f2249f7.png)
 
-<!--
-_color: black
--->
-
----
-
-## 3 - Nombre de scripts
-
-Un script principal et un script de suppression des ressources présents dans les deux parties.
-
-Plusieurs scripts pour la part 2 afin de pouvoir tester et m'assurer que chaque manifest fonctionne.
-Permet de  définir et d'enchaîner les étapes importantes du brief 6, mais aussi de faciliter la lisibilité et la modification des scripts.
-
-* Part 1 : un script principal
-* Part 2 : deux scripts Ingress, un script Issuer, un script principal, un script Certif, un script auto-scaling, le graph loadtester
-  
-<!--
-_backgroundColor: black
-_color: black
--->
-
---- 
-
-## 4 - Plan projet prévu VS plan projet exécuté 
-
-|  | *Plan projet prévu* | *Plan projet exécuté* |
-|-----------|:----------:|:------------:|
-| GR|&#9745;|&#9745;|
-| Clés SSH |&#9745;|&#9745;|
-| Images container |&#9745; |&#9745;|
-| Load Balancer |&#9745;|&#9745;|
-| ClusterIP |&#9745;|&#9745;|
-| Secret Kubernetes |&#9745;|&#9745;|
-| Storage account |&#9745;|&#9745;| 
 
 <!--
 _color: black
@@ -103,89 +115,7 @@ _color: black
 
 ---
 
-|  | *Plan projet prévu* | *Plan projet exécuté* |
-|-----------|:----------:|:------------:|
-| Persistent Volume |&#9745;|&#9745;|
-| Persistent Volume Claim |&#9745;|&#9745;|
-| Ingress |&#9745;|&#9745;|
-| Nginx |&#9745;|&#9745;|
-| Cert-manager |&#9745;|&#9745;|
-| Certificat TLS |&#9745;|&#9745;|
-| DNS |&#9745;|&#9745;|
-| Load tester |&#9745;|&#9745;|
-<!--
-_color: black
--->
-
---- 
-
-|  | *Plan projet prévu* | *Plan projet exécuté* |
-|-----------|:----------:|:------------:|
-| Executive summary |&#9745;|&#9745;|
-| DAT |&#9745;|&#9745;|
-| Explications fonctionnement Kubernetes |&#9745;|&#9745;|
-| Méthodologie Scrum |&#9745;|&#9745;|
-
-<!--
-_color: black
--->
-
----
-
-## 5 - Tâches supplentées
-
-Certaines tâches de la partie 2 du Brief 6 ont été supplentées afin de palier le manque de temps et permettre de réaliser les bonus.
-
-* App Gateway avec Agic-on
-* Certbot
-
-<!--
-_color: black
--->
-
----
-
-## 6 - Compréhension des outils et des logiciels
-
-***Kubernetes*** = 
-
-* Plateforme de déploiement et de gestion d’infrastructures résilientes, auto-réparatrices et à haute disponibilité.
-Possibilité d’augmenter ou de réduire le nombre de ressources (haute modulabilité).
-* Création de pools de nodes dans un cluster. Chaque node ayant son Kubelet agissant comme proxy pour les pods présents en leur sein.
-* Le DNS intégré permet aux services de communiquer avec les pods. Ceux-ci communiquent également entre eux grâce aux Kubelets et à leurs services attribués.
-
-<!--
-_color: black
--->
-
----
-
-***Ingress*** = 
-
-* L'Ingress (ou entrée réseau), intégré à Kubernetes, expose les routes HTTP et HTTPS de l'extérieur du cluster à des services au sein du cluster. 
-* Le routage du trafic est contrôlé par des règles définies sur la ressource Ingress.
-* Un Ingress peut être configuré pour donner aux services des URLs HTTPS accessibles de l'extérieur, un load balancer et un DNS. Un contrôleur d'Ingress est responsable de l'exécution de l'Ingress.
-
-<!--
-_color: black
--->
-
----
-
-## 6 - Difficultés  rencontrées
-
-J'ai rencontré plusieurs difficultés :
-
-* Difficultés avec le certificat TLS et de la connexion au nom de domaine en https
-* Gestion du pipeline avec le script en Bash
-
-<!--
-_color: black
--->
-
----
-
-## 7 - Solutions trouvées 
+## 6 - Difficultés rencontrées
 
 Afin de palier aux difficultés, j'ai cherché des solutions, me suis remise en question et ai adopté différents comportements :
 
@@ -198,9 +128,37 @@ _color: black
 
 ---
 
-## 8 - DAT et Executive Summary
+
+<!--
+_color: black
+-->
+
+---
+
+## 7 - Solutions trouvées
+
+J'ai rencontré plusieurs difficultés :
+
+* Difficultés avec le certificat TLS et de la connexion au nom de domaine en https
+* Gestion du pipeline avec le script en Bash
+
+<!--
+_color: black
+-->
+
+---
+
+## 8 - DAT
 
 [Document d'Architecture Technique](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/DAT.md)
+
+<!--
+_color: black
+-->
+
+---
+
+## 9 - Executive Summary
 
 [Executive summary](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/Executive_summary.docx)
 
@@ -209,6 +167,35 @@ _color: black
 -->
 
 ---
+
+## 10 - Costs forecast
+
+|Type | Mois | Année | Tri-annuel | Détails |
+|---|---|---|---|---|
+| Pay-as-You-Go | 34,04€ | 408,49€ | 1225,44€ | [Monthly Cost forecast](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/Costs_forecast_monthly.xlsx) |
+| Pré-paiement annuel | 20,66€ | 247,95€ | 743,76€ | [Yearly Cost forecast](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/Costs_forecast_1year.xlsx) |
+| Pré-paiement tri-annuel | 13,78€ | 165,37€ | 496,08€ | [Triennaly](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/Costs_forecast_3years.xlsx) |
+
+<!--
+_color: black
+-->
+
+---
+
+## 10 - Costs forecast
+
+Dépenses d’exploitation : 
+- OPEX (en fonction de l’usage)
+- CAPEX (gestion du pipeline - connexion – électricité)  
+
+Il n’y a pas d’entretien (ou presque) car pas de machines physiques (hormis le point d’accès administrateur).
+
+<!--
+_color: black
+-->
+
+---
+
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![Merci_-_Noir](https://user-images.githubusercontent.com/108001918/196387576-cfcdcdda-7a6b-4021-ab84-3a06ebc95ab6.png)
 
 <!--
