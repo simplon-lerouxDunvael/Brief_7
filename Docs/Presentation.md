@@ -26,7 +26,7 @@ Dunvael et Luna
 01 - Projet
 02 - Topologie
 03 - Déploiement & maj de la Voting App via Azure DevOps Pipeline
-04 - Outils, logiciels et ressources
+04 - Outils et ressources
 05 - Compréhension des outils et des logiciels
 06 - Difficultés rencontrées
 07 - Solutions trouvées
@@ -93,7 +93,7 @@ _color: black
 
 --- 
 
-## 4 - Outils, logiciels et ressources 
+## 4 - Outils et ressources 
 
 | Ressources | Azure  | AKS  | Azure DevOps  | GitHub  | Docker |
 |:---|:---:|:---:|:---:|:---:|:---:|
@@ -107,23 +107,19 @@ _color: black
 _color: black
 -->
 
----
-
-
-<!--
-_color: black
--->
-
 --- 
+
+## 4 - Outils et ressources 
 
 * Documentation Microsoft Azure
 * Documentation Kubernetes
+* Documentation Azure DevOps Pipeline
 * Portail Azure pour l'interface graphique
 * Cloudshell du portail Azure
 * Moteur de recherche Google
 * Visual Studio Code
 * Github
-* *L'aide précieuse de Luna et Quentin*
+* *L'aide précieuse de Quentin et de nos formateurs*
 
 <!--
 _color: black
@@ -133,7 +129,13 @@ _color: black
 
 ## 5 - Compréhension des outils et des logiciels
 
+Un pipeline est un enchaînement de tâches qui permet de planifier les différentes étapes de déploiement du code dans un CI/CD.
 
+Azure DevOps Pipelines permet :
+* de tester le code et les changements apportés
+* de produire un artefact pour le déploiement
+
+=> Création des différentes tâches et de ce qu’elles doivent exécuter (commandes, vérifications...). Lancement du pipeline après l’avoir lié à Github et Kubernetes.
 
 <!--
 _color: black
