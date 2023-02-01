@@ -95,7 +95,13 @@ _color: black
 
 ## 4 - Outils, logiciels et ressources 
 
-
+| Ressources | Azure  | AKS  | Azure DevOps  | GitHub  | Docker |
+|---|---|---|---|---|---|
+| Groupe de ressources  |  ✓ |  ✓ |  ✓ |  ✗ |  ✗ |
+| Image | ✗  |  ✓ |  Ubuntu:Latest | ✗  |  ✓ |
+| Kubernetes secret | ✗  | ✓  | ✓  | ✗  |  ✗ |
+| Ingress |  ✓ | ✓  | ✗  | ✗  |  ✗ |
+| Cert-manager |  ✗ | ✓ v1.10.1  | ✗  | ✗  | ✗  |
 
 <!--
 _color: black
