@@ -114,9 +114,6 @@ Infrastructure Plannifiée
 | Load Balancer | N/A | ✓ puis ✗ | ✓ |
 | ClusterIP | N/A | ✗ puis ✓ | ✗ |
 | Kubernetes secret | ✓ | ✓ | ✓ |
-| Storage secret | ✓ | ✓ | ✓ |
-| Storage account (Standard LRS) | N/A | ✓ | ✓ |
-| Persistent Volume | N/A | ✓ | ✗ |
 | Persistent Vol. Claim (3Gi)| N/A | ✓ | ✗ |
 | Ingress | ✓ | ✗ | ✓ |
 | Nginx | ✓ | ✗ | ✗ |
