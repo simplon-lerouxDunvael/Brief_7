@@ -20,21 +20,23 @@
 ###### [14 - Updating the voting app on the script](#Updating)
 ###### [15 - Remove the PV](#PV)
 ###### [16 - Delete everything and start again](#Again)
-###### [17 - Scheduling](#Scheduling)
-###### [18 - Add Ingress](#Ingress)
-###### [19 - Install Cert-manager and Jetstack (for gandi)](#Cert-manager)
-###### [20 - Creation of a Gandi secret](#Gsecret)
-###### [21 - Install cert-manager webhook for gandi](#Webhook)
-###### [22 - Creation of secret role and binding for webhook](#Binding)
-###### [23 - Check the certificate](#Certificate)
-###### [24 - How to get a certificate Summary](#Summary)
-###### [25 - Executive summary](#ExecSummary)
-###### [26 - Technical Architecture Document of deployed infrastructure](#DAT)
-###### [27 - Check consumption](#Consumption)
+###### [17 - Add Ingress](#Ingress)
+###### [18 - Install Cert-manager and Jetstack (for gandi)](#Cert-manager)
+###### [19 - Creation of a Gandi secret](#Gsecret)
+###### [20 - Install cert-manager webhook for gandi](#Webhook)
+###### [21 - Creation of secret role and binding for webhook](#Binding)
+###### [22 - Check the certificate](#Certificate)
+###### [23 - Scheduling](#Scheduling)
+###### [24 - Pipeline debugging](#Debugging)
+###### [25 - How to get a certificate Summary](#Summary)
+###### [26 - Executive summary](#ExecSummary)
+###### [27 - Technical Architecture Document of deployed infrastructure](#DAT)
+###### [28 - Check consumption](#Consumption)
+###### [29 - Usefull Commands](#UsefullCommands)
 
 <div id='Scrum'/>  
 
-### 0. Scrum quotidien
+### **Scrum quotidien**
 
 Scrum Master = Me, myself and I
 Daily personnal reactions with reports and designations of first tasks for the day.
@@ -294,22 +296,6 @@ I decided to delete my resource groups to try once again from scratch and check 
 
 [&#8679;](#top)
 
-<div id='Scheduling'/>  
-
-### **Scheduling**
-
-[Scheduling a pipeline](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/scheduled-triggers?view=azure-devops&tabs=yaml)
-
-In order to update the Voting app with its last version, I scheduled the pipeline so it would ran every hour on the hour.
-
-![scheduling](https://user-images.githubusercontent.com/108001918/210753304-56bbd627-4139-4193-8afa-b20696251a79.png)
-
-Then I verified that the pipeline job was a success.
-
-![scheduling_pipeline_success](https://user-images.githubusercontent.com/108001918/210757983-4f4958a2-c718-46ec-9083-f622e9f4483f.png)
-
-[&#8679;](#top)
-
 <div id='Ingress'/>  
 
 ### **Add Ingress**
@@ -440,6 +426,54 @@ kubectl describe challenges
 
 [&#8679;](#top)
 
+<div id='Scheduling'/>  
+
+### **Scheduling**
+
+[Scheduling a pipeline](https://learn.microsoft.com/en-us/azure/devops/pipelines/process/scheduled-triggers?view=azure-devops&tabs=yaml)
+
+In order to update the Voting app with its last version, I scheduled the pipeline so it would ran every hour on the hour.
+
+![scheduling](https://user-images.githubusercontent.com/108001918/210753304-56bbd627-4139-4193-8afa-b20696251a79.png)
+
+Then I verified that the pipeline job was a success.
+
+![scheduling_pipeline_success](https://user-images.githubusercontent.com/108001918/210757983-4f4958a2-c718-46ec-9083-f622e9f4483f.png)
+
+[&#8679;](#top)
+
+<div id='Debugging'/>  
+
+### **Pipeline debugging**
+
+I found that I had issues with my pipeline that did not update the app version even though it was running. I added some commands to update the Kubenertes secret but the cmd line's job was failing. The commands were not read. 
+
+Then I relaunched the pipeline and got an error message saying that `the filename could not be found`. After several checks it seemed to be a credential issue. I proceeded in two steps :
+
+- First I redid the pipeline and service connections (Kubernetes and Github) in order to get new (fresh) tokens but it did not solve the issue
+- Then I added a task to get Kubernetes credentials but once again, it did not solve the issue
+
+I started different checks and tried to point at which command, specifically, the issue happened. So I added `set -x` (that shows the process for every commands). It highlighted that there were quotation marks on the app version on the variable I had created (kubernetes secret).
+I could also have used `set -e` that stops at the first error during the cmd process.
+
+In order to remove the quotation marks from the voting app version from the VERVAR variable I created, I added  `| sed 's/"//g; s/}//g')` to the command : the quotation marks were removed from the get secret output for the variable VERCUR.
+
+Then i added `|awk -F ':' '{print $2}'` in order to cut the output from the command and only get the second part of the secret. This gave me the following command to get the secret second part without the quotation marks :
+
+``` Bash
+VERCUR=$(kubectl get secret version-secret -o jsonpath='{.data}'|awk -F ':' '{print $2}' | sed 's/"//g; s/}//g')
+```
+
+Then as the secret was encoded, I used the following Bash command to decode it :
+
+``` Bash
+VERCUR=$(echo "$VAR1" | base64 -d)
+```
+
+Then I checked the result with `echo` and I had the app version display in clear without the quotation marks for the Kubenertes secret and for the curl which I then could compare. To sum up : I now have the current version, the secret version of the app and the potential difference between the two, allowing me to automatize to update (or not) the secret and the pod.
+
+[&#8679;](#top)
+
 <div id='Summary'/>  
 
 ### **How to get a certificate Summary**
@@ -453,6 +487,44 @@ Then, resettle the Host and TLS in Ingress ***DO NOT DELETE***, reapply the file
 Finally, apply the Issuer yaml file and ONLY THEN, apply the certificate file (certif-space-com.yaml).
 
 [ingress.yaml](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Infra_K8s/ingress.yaml) -> [issuer.yaml](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Infra_K8s/issuer.yaml) -> [certif-space-com.yaml](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Infra_K8s/certif-space-com.yaml)
+
+[&#8679;](#top)
+
+<div id='ExecSummary'/>  
+
+### **Executive summary**
+
+[Cf. document "Executive_summary_Dun"](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/Executive_summary.docx)
+
+[&#8679;](#top)
+
+<div id='DAT'/> 
+
+### **Technical Architecture Document of deployed infrastructure**
+
+[Cf. document "DAT.md"](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/DAT.md)
+
+[&#8679;](#top)
+
+<div id='Consumption'/> 
+
+### **Check consumption**
+
+I tried to check the consumption for the infrastructure deployed and tests I realized, but it seems that I do not have the rights on the subscription.
+
+```Bash
+az consumption usage list --subscription a1f74e2d-ec58-4f9a-a112-088e3469febb
+```
+
+![costs](https://user-images.githubusercontent.com/108001918/211002170-0674e200-e973-4cd2-9a70-12ffa38375cd.png)
+
+So I decided to use the Azure Calculator in order to check the consumption of this brief's resources.  
+
+I calculated costs on several paying plans :
+
+- [Monthly (for 12 months)](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/Costs_forecast_monthly.xlsx)
+- [Yearly](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/Costs_forecast_1year.xlsx)
+- [Triennially](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/Costs_forecast_3years.xlsx)
 
 [&#8679;](#top)
 
@@ -681,75 +753,6 @@ _Example :_
 ```bash
 kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
 ```
-
-[&#8679;](#top)
-
-<div id='ExecSummary'/>  
-
-### **Executive summary**
-
-[Cf. document "Executive_summary_Dun"](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/Executive_summary.docx)
-
-[&#8679;](#top)
-
-<div id='DAT'/> 
-
-### **Technical Architecture Document of deployed infrastructure**
-
-[Cf. document "DAT.md"](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/DAT.md)
-
-[&#8679;](#top)
-
-<div id='Consumption'/> 
-
-### **Check consumption**
-
-I tried to check the consumption for the infrastructure deployed and tests I realized, but it seems that I do not have the rights on the subscription.
-
-```Bash
-az consumption usage list --subscription a1f74e2d-ec58-4f9a-a112-088e3469febb
-```
-
-![costs](https://user-images.githubusercontent.com/108001918/211002170-0674e200-e973-4cd2-9a70-12ffa38375cd.png)
-
-So I decided to use the Azure Calculator in order to check the consumption of this brief's resources.  
-
-I calculated costs on several paying plans :
-
-- [Monthly (for 12 months)](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/Costs_forecast_monthly.xlsx)
-- [Yearly](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/Costs_forecast_1year.xlsx)
-- [Triennially](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/Costs_forecast_3years.xlsx)
-
-[&#8679;](#top)
-
-
-### **Pipeline debugging**
-
-I found that I had issues with my pipeline that did not update the app version even though it was running. I added some commands to update the Kubenertes secret but the cmd line's job was failing. The commands were not read. 
-
-Then I relaunched the pipeline and got an error message saying that `the filename could not be found`. After several checks it seemed to be a credential issue. I proceeded in two steps :
-
-- First I redid the pipeline and service connections (Kubernetes and Github) in order to get new (fresh) tokens but it did not solve the issue
-- Then I added a task to get Kubernetes credentials but once again, it did not solve the issue
-
-I started different checks and tried to point at which command, specifically, the issue happened. So I added `set -x` (that shows the process for every commands). It highlighted that there were quotation marks on the app version on the variable I had created (kubernetes secret).
-I could also have used `set -e` that stops at the first error during the cmd process.
-
-In order to remove the quotation marks from the voting app version from the VERVAR variable I created, I added  `| sed 's/"//g; s/}//g')` to the command : the quotation marks were removed from the get secret output for the variable VERCUR.
-
-Then i added `|awk -F ':' '{print $2}'` in order to cut the output from the command and only get the second part of the secret. This gave me the following command to get the secret second part without the quotation marks :
-
-``` Bash
-VERCUR=$(kubectl get secret version-secret -o jsonpath='{.data}'|awk -F ':' '{print $2}' | sed 's/"//g; s/}//g')
-```
-
-Then as the secret was encoded, I used the following Bash command to decode it :
-
-``` Bash
-VERCUR=$(echo "$VAR1" | base64 -d)
-```
-
-Then I checked the result with `echo` and I had the app version display in clear without the quotation marks for the Kubenertes secret and for the curl which I then could compare. To sum up : I now have the current version, the secret version of the app and the potential difference between the two, allowing me to launch or not the secret update and the pod update.
 
 [&#8679;](#top)
 
