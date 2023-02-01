@@ -10,11 +10,11 @@ paginate: true
 _color: black
 -->
 
-# Présentation Brief 6
+# Présentation Brief 7
 #### Mise à jour du service applicatif Voting App via Azure DevOps Pipeline
-Dunvael 
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![width:700px height:300px](https://user-images.githubusercontent.com/108001918/215808280-0a44d894-1cff-436c-b4be-24ce92ae5598.png)
+Dunvael et Luna
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![width:700px height:350px](https://user-images.githubusercontent.com/108001918/215808280-0a44d894-1cff-436c-b4be-24ce92ae5598.png)
 
 
 <!-- paginate: false -->
@@ -23,19 +23,16 @@ Dunvael
 
 # SOMMAIRE  
 
-1 - Projet
-2 - Topologie
-3 - Déploiement via le pipeline Azure DevOps
-4 - Outils, logiciels et ressources
-5 - 
-3 - Nombre de scripts
-4 - Plan projet prévu VS plan projet exécuté
-6 - Compréhension des outils et des logiciels
-7 - Difficultés rencontrées
-8 - Solutions trouvées
-9 - DAT et Executive Summary
-Ressources utilisées
-
+01 - Projet
+02 - Topologie
+03 - Déploiement & maj de la Voting App via Azure DevOps Pipeline
+04 - Outils, logiciels et ressources
+05 - Compréhension des outils et des logiciels
+06 - Difficultés rencontrées
+07 - Solutions trouvées
+08 - DAT
+09 - Executive Summary
+10 - Costs forecast
 
 <!-- paginate: true -->
 <!--
