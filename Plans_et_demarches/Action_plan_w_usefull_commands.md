@@ -489,7 +489,7 @@ I could also have used `set -e` that stops at the first error during the cmd pro
 
 In order to remove the quotation marks from the voting app version from the VERVAR variable I created, I added  `| sed 's/"//g; s/}//g')` to the command : the quotation marks were removed from the get secret output for the variable VERCUR.
 
-Then i added `|awk -F ':' '{print $2}'` in order to cut the output from the command and only get the second part of the secret. This gave me the following command to get the secret second part without the quotation marks :
+Then i added `|awk -F ':' '{print $2}'` in order to cut the output from the command and only get the second part of the secret (*{"version":"djEuMC4xMw=="}*). This gave me the following command to get the secret second part without the quotation marks and closing bracket :
 
 ``` Bash
 VERCUR=$(kubectl get secret version-secret -o jsonpath='{.data}'|awk -F ':' '{print $2}' | sed 's/"//g; s/}//g')
@@ -503,8 +503,10 @@ VERCUR=$(echo "$VAR1" | base64 -d)
 
 Then I checked the result with `echo` and I had the app version display in clear without the quotation marks for the Kubenertes secret and for the curl which I then could compare. To sum up : I now have the current version, the secret version of the app and the potential difference between the two, allowing me to automatize to update (or not) the secret and the pod.
 
+![pipeline_working_for_real](https://user-images.githubusercontent.com/108001918/216048585-9b9ae17d-b395-49e8-bd40-e65fc8c426ae.png)
+
 _I could have also used a different way to remove the quotations marks from the variable and secret. This regex `s/^\"(.*)\"$/\1/` allows me to remove the quotation marks at the beginning and the end, but most importantly, keep 'safe' a group of characters that could contains quotation marks as well (for example a password). In this brief it is not a problem but in other situations it could become one._  
-_In conclusion, as it was Alfred who created this regex to show me how he would have done it and explained it to me, I did not put it in the brief and kept my solution, but I will use it in the future._
+_In conclusion, as it was Alfred who created this regex to show me how he would have done it and explained it to me, I did not put it in the brief and kept my solution, but I will use it in the future. As the secret is in json has a closing bracket, I could not use this solution (but I could have use it for the curl)._
 
 [&#8679;](#top)
 
