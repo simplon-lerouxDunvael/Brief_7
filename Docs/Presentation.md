@@ -96,12 +96,12 @@ _color: black
 ## 4 - Outils, logiciels et ressources 
 
 | Ressources | Azure  | AKS  | Azure DevOps  | GitHub  | Docker |
-|---|---|---|---|---|---|
-| Groupe de ressources  |<p style="text-align: center;"> ✓ <p>|<p style="text-align: center;"> ✓ <p>|<p style="text-align: center;"> ✓ <p>|<p style="text-align: center;"> ✗ <p>|<p style="text-align: center;"> ✗ <p>|
-| Image |<p style="text-align: center;"> ✗ <p>|<p style="text-align: center;"> ✓ <p>|  Ubuntu:Latest |<p style="text-align: center;"> ✗ <p>|<p style="text-align: center;"> ✓ <p>|
-|<p style="text-align: center;"> Kubernetes secret <p>|<p style="text-align: center;"> ✗ <p>|<p style="text-align: center;"> ✓ <p>|<p style="text-align: center;"> ✓ <p>|<p style="text-align: center;"> ✗ <p>|<p style="text-align: center;"> ✗ <p>|
-| Ingress |<p style="text-align: center;"> ✓ <p>|<p style="text-align: center;"> ✓ <p>|<p style="text-align: center;"> ✗ <p>|<p style="text-align: center;"> ✗ <p>|<p style="text-align: center;"> ✗ <p>|
-| Cert-manager |<p style="text-align: center;"> ✗ <p>|<p style="text-align: center;"> ✓ v1.10.1  <p>|<p style="text-align: center;"> ✗ <p>|<p style="text-align: center;"> ✗ <p>|<p style="text-align: center;"> ✗ <p>|
+|:---|:---:|:---:|:---:|:---:|:---:|
+| Groupe de ressources  |  ✓ |  ✓ |  ✓ |  ✗ |  ✗ |
+| Image | ✗  |  ✓ |  Ubuntu:Latest | ✗  |  ✓ |
+| Kubernetes secret | ✗  | ✓  | ✓  | ✗  |  ✗ |
+| Ingress |  ✓ | ✓  | ✗  | ✗  |  ✗ |
+| Cert-manager |  ✗ | ✓ v1.10.1  | ✗  | ✗  | ✗  |
 
 <!--
 _color: black
