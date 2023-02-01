@@ -43,7 +43,9 @@ _color: black
 
 ## 1 - Projet
 
+Utilisation de Pipelines d’Azure DevOps afin de tester les changements de version et de déployer automatiquement la mise à jour de l’application au besoin.
 
+La mise à jour de la Voting App est planifiée chaque heure et doit être vérifiable via le pipeline.
 
 <!--
 _color: black
@@ -66,6 +68,24 @@ _color: black
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ![pipeline_process](https://user-images.githubusercontent.com/108001918/215771546-dd5bb6bd-c13e-41b7-992f-ea0a3c0b75d8.png)
   
+<!--
+_backgroundColor: black
+_color: black
+-->
+
+--- 
+
+## 3 - Déploiement & maj de la Voting App via Azure DevOps Pipeline
+
+* Scheduling
+* Kubernetes Login
+* Command line :
+  * Debugging (à enlever en prod)
+  * Extraction n° de version sur Docker (actuelle)
+  * Extraction n° de version Kubernetes (en usage)
+  * Vérification différence entre versions + déclenchement maj
+* Mise à jour du pod Kubernetes
+
 <!--
 _backgroundColor: black
 _color: black
@@ -117,17 +137,13 @@ _color: black
 
 ## 6 - Difficultés rencontrées
 
-Afin de palier aux difficultés, j'ai cherché des solutions, me suis remise en question et ai adopté différents comportements :
+Nous avons rencontré plusieurs difficultés :
 
-* Communications avec les autres membres de la formation
-* Des temps de pause (câlins et bisous au chaton par exemple ou pause chocolat)
-
-<!--
-_color: black
--->
-
----
-
+* Difficultés avec le certificat TLS et la connexion au nom de domaine en https
+* Gestion du pipeline avec le script en Bash
+* La liaison entre Azure DevOps et Azure
+* Les droits/rôles sur l'AD de Simplon qui nous ont ralenties et fortement contraintes
+* L'extraction et la transformation du secret afin qu'il puisse être utilisable en dehors de Kubernetes
 
 <!--
 _color: black
@@ -137,10 +153,12 @@ _color: black
 
 ## 7 - Solutions trouvées
 
-J'ai rencontré plusieurs difficultés :
+Afin de palier aux difficultés, nous avons cherché des solutions et avons adopté différents comportements :
 
-* Difficultés avec le certificat TLS et de la connexion au nom de domaine en https
-* Gestion du pipeline avec le script en Bash
+* Communications avec les autres membres de la formation
+* Recherches sur les documentations et sites communautaires (messages d'erreur)
+* Ecriture du code avec le debuggage en tête (ciblage et vérifications dans les processus (*`set -x`* et *`set -e`*))
+* Des temps de pause (câlins et bisous au chaton par exemple ou pause chocolat) et blagues avec les collègues
 
 <!--
 _color: black
