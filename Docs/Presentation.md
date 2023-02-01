@@ -14,27 +14,26 @@ _color: black
 #### Mise à jour du service applicatif Voting App via Azure DevOps Pipeline
 Dunvael 
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![width:700px height:300px](https://user-images.githubusercontent.com/108001918/215808280-0a44d894-1cff-436c-b4be-24ce92ae5598.png))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![width:700px height:300px](https://user-images.githubusercontent.com/108001918/215808280-0a44d894-1cff-436c-b4be-24ce92ae5598.png)
 
 
 <!-- paginate: false -->
 
 ---
+
 # SOMMAIRE  
+
 1 - Projet
 2 - Topologie
 3 - Déploiement via le pipeline Azure DevOps
 4 - Outils, logiciels et ressources
 5 - 
-
-
 3 - Nombre de scripts
 4 - Plan projet prévu VS plan projet exécuté
 6 - Compréhension des outils et des logiciels
 7 - Difficultés rencontrées
 8 - Solutions trouvées
 9 - DAT et Executive Summary
-
 Ressources utilisées
 
 
@@ -44,7 +43,9 @@ _color: black
 -->
 
 ---
+
 ## 1 - Ressources utilisées  
+
 * Documentation Microsoft Azure
 * Documentation Kubernetes
 * Portail Azure pour l'interface graphique
@@ -59,6 +60,7 @@ _color: black
 -->
 
 ---
+
 ## 2 - Topologie
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![width:500px height:500px](https://user-images.githubusercontent.com/108001918/196372669-f0cf2f50-dd24-4ff1-88b6-ed350f2249f7.png)
@@ -68,12 +70,14 @@ _color: black
 -->
 
 ---
+
 ## 3 - Nombre de scripts
 
 Un script principal et un script de suppression des ressources présents dans les deux parties.
 
 Plusieurs scripts pour la part 2 afin de pouvoir tester et m'assurer que chaque manifest fonctionne.
 Permet de  définir et d'enchaîner les étapes importantes du brief 6, mais aussi de faciliter la lisibilité et la modification des scripts.
+
 * Part 1 : un script principal
 * Part 2 : deux scripts Ingress, un script Issuer, un script principal, un script Certif, un script auto-scaling, le graph loadtester
   
@@ -83,7 +87,9 @@ _color: black
 -->
 
 --- 
+
 ## 4 - Plan projet prévu VS plan projet exécuté 
+
 |  | *Plan projet prévu* | *Plan projet exécuté* |
 |-----------|:----------:|:------------:|
 | GR|&#9745;|&#9745;|
@@ -98,7 +104,8 @@ _color: black
 _color: black
 -->
 
---- 
+---
+
 |  | *Plan projet prévu* | *Plan projet exécuté* |
 |-----------|:----------:|:------------:|
 | Persistent Volume |&#9745;|&#9745;|
@@ -127,9 +134,11 @@ _color: black
 -->
 
 ---
+
 ## 5 - Tâches supplentées
 
 Certaines tâches de la partie 2 du Brief 6 ont été supplentées afin de palier le manque de temps et permettre de réaliser les bonus.
+
 * App Gateway avec Agic-on
 * Certbot
 
@@ -138,8 +147,11 @@ _color: black
 -->
 
 ---
+
 ## 6 - Compréhension des outils et des logiciels
+
 ***Kubernetes*** = 
+
 * Plateforme de déploiement et de gestion d’infrastructures résilientes, auto-réparatrices et à haute disponibilité.
 Possibilité d’augmenter ou de réduire le nombre de ressources (haute modulabilité).
 * Création de pools de nodes dans un cluster. Chaque node ayant son Kubelet agissant comme proxy pour les pods présents en leur sein.
@@ -152,6 +164,7 @@ _color: black
 ---
 
 ***Ingress*** = 
+
 * L'Ingress (ou entrée réseau), intégré à Kubernetes, expose les routes HTTP et HTTPS de l'extérieur du cluster à des services au sein du cluster. 
 * Le routage du trafic est contrôlé par des règles définies sur la ressource Ingress.
 * Un Ingress peut être configuré pour donner aux services des URLs HTTPS accessibles de l'extérieur, un load balancer et un DNS. Un contrôleur d'Ingress est responsable de l'exécution de l'Ingress.
@@ -161,7 +174,9 @@ _color: black
 -->
 
 ---
+
 ## 6 - Difficultés  rencontrées
+
 J'ai rencontré plusieurs difficultés :
 
 * Difficultés avec le certificat TLS et de la connexion au nom de domaine en https
@@ -172,7 +187,9 @@ _color: black
 -->
 
 ---
+
 ## 7 - Solutions trouvées 
+
 Afin de palier aux difficultés, j'ai cherché des solutions, me suis remise en question et ai adopté différents comportements :
 
 * Communications avec les autres membres de la formation
@@ -183,6 +200,7 @@ _color: black
 -->
 
 ---
+
 ## 8 - DAT et Executive Summary
 
 [Document d'Architecture Technique](https://github.com/simplon-lerouxDunvael/Brief_7/blob/main/Docs/DAT.md)
