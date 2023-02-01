@@ -113,7 +113,7 @@ Infrastructure Plannifiée
 | Image | N/A | redis:latest  | simplonasa/azure_voting_app:v1.0.11 |
 | Load Balancer | N/A | ✓ puis ✗ | ✓ |
 | ClusterIP | N/A | ✗ puis ✓ | ✗ |
-| Kebernetes secret | ✓ | ✓ | ✓ |
+| Kubernetes secret | ✓ | ✓ | ✓ |
 | Storage secret | ✓ | ✓ | ✓ |
 | Storage account (Standard LRS) | N/A | ✓ | ✓ |
 | Persistent Volume | N/A | ✓ | ✗ |
