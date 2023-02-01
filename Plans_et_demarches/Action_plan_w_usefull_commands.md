@@ -106,10 +106,10 @@ Infrastructure Plannifiée
 | :--------: | :--------: | :--------: | :--------: |
 | Azure service | ✓ | ✓ | ✓ |
 | Azure DevOps | ✓ | ✓ | ✓ |
-| ressource groupe | ✓ |✓ | ✓ |
+| resource group | ✓ |✓ | ✓ |
 | SSH (port) | N/A | 6379 | 80 |
 | CPU | N/A | 100m-250m | 100m-250m |
-| Mémoire | N/A | 128mi-256mi | 128mi-256mi |
+| Memory | N/A | 128mi-256mi | 128mi-256mi |
 | Image | N/A | redis:latest  | simplonasa/azure_voting_app:v1.0.11 |
 | Load Balancer | N/A | ✓ puis ✗ | ✓ |
 | ClusterIP | N/A | ✗ puis ✓ | ✗ |
