@@ -1,12 +1,12 @@
 schedules:
-  - cron: "0 * * * *" # cron syntax defining the schedule - every hour at 0'
-    displayName: Hourly main schedule # friendly name given to a specific schedule
-    branches:
-      include: # which branches the schedule applies to
-      - main 
+- cron: "0 * * * *" # cron syntax defining the schedule - every hour at 0'
+  displayName: Hourly main schedule # friendly name given to a specific schedule
+  branches:
+    include: # which branches the schedule applies to
+    - main 
 #    exclude: # which branches to exclude from the schedule
 #    - [string]
-    always: false # whether to always run the pipeline or only if there have been source code changes since the last successful scheduled run. The default is false.
+  always: false # whether to always run the pipeline or only if there have been source code changes since the last successful scheduled run. The default is false.
 
 trigger:
 - main
@@ -22,26 +22,27 @@ steps:
     kubernetesServiceEndpoint: 'Kubernetes Service Connection'
     command: 'login'
 
-- task: CmdLine@1
+
+- task: CmdLine@2
   inputs:
     script: |
-      cat /home/vsts/version/version.vote
-      mkdir /home/vsts/version
-      mkdir /home/vsts/git
+      set -x
       pwd
       ls -la
-      TESTVAR=$(curl 'https://hub.docker.com/v2/repositories/simplonasa/azure_voting_app/tags' | jq '."results"[0]["name"]')
-      echo "$TESTVAR"|sed 's/^.//;s/.$//' >/home/vsts/version/version.vote
-      cat /home/vsts/version/version.vote
-
-      # Retrieve the value of the secret 
-      SECRET_VALUE=$(Kubectl get secret version-secret -o jsonpath={.data.version} 2>/dev/null)
+      # Retrieve the version of the image into file for secret
+      VERVAR=$(curl 'https://hub.docker.com/v2/repositories/simplonasa/azure_voting_app/tags' | jq '."results"[0]["name"]'|sed -e 's/^"//' -e 's/"$//' <<<"$VERVAR")
+      echo "$VERVAR"|sed 's/^.//;s/.$//' >./version.vote
+      cat ./version.vote
+      # Retrieve the value of the secret
+      VERCUR=$(kubectl get secret version-secret -o jsonpath='{.data}'|awk -F ':' '{print $2}' | sed 's/\"//g; s/}//g')
+      VERCUR=$(echo "$VAR1" | base64 -d)
+      echo "$VERCUR"
       if [ $? -ne 0 ]; then
-        # Secret does not exist
-        kubectl create secret generic version-secret --from-litteral=version=$TESTVAR
-      elif [ "$TESTVAR" != "$SECRET_VALUE" ]; then
+        # secret does not exist
+        kubectl create secret generic version-secret --from-literal=version=$VERVAR
+      elif [ "$VERVAR" != "$VERCUR" ]; then
         # Update the secret with the new version number
-        kubectl patch secret version-secret -p "{\data\":{\"version\":\"$TESTVAR\"}}"
+        kubectl patch secret version-secret -p "{\"data\":{\"version\":\"$VERVAR\"}}"
       else
         echo "The version in the secret is the same as the version found"
       fi
@@ -55,5 +56,7 @@ steps:
     configuration: '/home/vsts/work/1/s/vote_renew.yaml'
     secretType: 'dockerRegistry'
     containerRegistryType: 'Azure Container Registry'
-  displayName: 'Run Voting App s version renewal'
-  condition: and(succeeded(), ne(variables['TESTVAR'], variables['SECRET_VALUE']))
+  displayName: 'Kubernetes Infra'
+  condition: and(succeeded(), ne(variables['VERVAR'], variables['VERCUR']))
+
+
