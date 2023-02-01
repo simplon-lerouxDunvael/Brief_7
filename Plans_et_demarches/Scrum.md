@@ -77,11 +77,13 @@ Objectifs :
 Mercredi 01/02/23  
 Résultats de la veille :
 
-* 
+* Cost forecast et DAT terminés
+* Présentation Marp commencée 
 
 Objectifs :
 
-* 
+* Terminer la présentation Marp
+* Régler le problème Pipeline
 
 Jeudi 02/02/23  
 Résultats de la veille :

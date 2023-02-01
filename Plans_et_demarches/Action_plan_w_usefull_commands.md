@@ -722,4 +722,18 @@ I calculated costs on several paying plans :
 
 [&#8679;](#top)
 
+
+### **Pipeline issues**
+
+I found that i had issues with my pipeline that did not update the app version even though it was running.
+I added `set -x` (shows the process for every commands), `set -e` => to stop at the first error.
+
+Token changes = delete and renew the service connection for Kubernetes and Azure DevOps.
+
+In order to remove the quotation marks from the voting app version from the TESTVAR variable I created, I added  sed -e 's/^"//' -e 's/"$//' to the command to remove them and for the variable output to be without them too.
+
+```TESTVAR=sed -e 's/^"//' -e 's/"$//' <<<"$TESTVAR"```    #Save in same variable
+
+[&#8679;](#top)
+
 </div>
