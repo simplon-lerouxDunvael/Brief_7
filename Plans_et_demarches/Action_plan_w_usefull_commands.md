@@ -723,16 +723,33 @@ I calculated costs on several paying plans :
 [&#8679;](#top)
 
 
-### **Pipeline issues**
+### **Pipeline debugging**
 
-I found that i had issues with my pipeline that did not update the app version even though it was running.
-I added `set -x` (shows the process for every commands), `set -e` => to stop at the first error.
+I found that I had issues with my pipeline that did not update the app version even though it was running. I added some commands to update the Kubenertes secret but the cmd line's job was failing. The commands were not read. 
 
-Token changes = delete and renew the service connection for Kubernetes and Azure DevOps.
+Then I relaunched the pipeline and got an error message saying that `the filename could not be found`. After several checks it seemed to be a credential issue. I proceeded in two steps :
 
-In order to remove the quotation marks from the voting app version from the TESTVAR variable I created, I added  sed -e 's/^"//' -e 's/"$//' to the command to remove them and for the variable output to be without them too.
+- First I redid the pipeline and service connections (Kubernetes and Github) in order to get new (fresh) tokens but it did not solve the issue
+- Then I added a task to get Kubernetes credentials but once again, it did not solve the issue
 
-```TESTVAR=sed -e 's/^"//' -e 's/"$//' <<<"$TESTVAR"```    #Save in same variable
+I started different checks and tried to point at which command, specifically, the issue happened. So I added `set -x` (that shows the process for every commands). It highlighted that there were quotation marks on the app version on the variable I had created (kubernetes secret).
+I could also have used `set -e` that stops at the first error during the cmd process.
+
+In order to remove the quotation marks from the voting app version from the VERVAR variable I created, I added  `| sed 's/"//g; s/}//g')` to the command : the quotation marks were removed from the get secret output for the variable VERCUR.
+
+Then i added `|awk -F ':' '{print $2}'` in order to cut the output from the command and only get the second part of the secret. This gave me the following command to get the secret second part without the quotation marks :
+
+``` Bash
+VERCUR=$(kubectl get secret version-secret -o jsonpath='{.data}'|awk -F ':' '{print $2}' | sed 's/"//g; s/}//g')
+```
+
+Then as the secret was encoded, I used the following Bash command to decode it :
+
+``` Bash
+VERCUR=$(echo "$VAR1" | base64 -d)
+```
+
+Then I checked the result with `echo` and I had the app version display in clear without the quotation marks for the Kubenertes secret and for the curl which I then could compare. To sum up : I now have the current version, the secret version of the app and the potential difference between the two, allowing me to launch or not the secret update and the pod update.
 
 [&#8679;](#top)
 
