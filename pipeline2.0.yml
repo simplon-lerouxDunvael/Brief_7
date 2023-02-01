@@ -19,7 +19,7 @@ steps:
 - task: Kubernetes@1
   inputs:
     connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceEndpoint: 'konnection'
+    kubernetesServiceEndpoint: 'Kubernetes Service Connection'
     command: 'login'
 
 
@@ -50,13 +50,13 @@ steps:
 - task: Kubernetes@1
   inputs:
     connectionType: 'Kubernetes Service Connection'
-    kubernetesServiceEndpoint: 'konnection'
+    kubernetesServiceEndpoint: 'Kubernetes Service Connection'
     command: 'apply'
     useConfigurationFile: true
     configuration: '/home/vsts/work/1/s/vote-renew.yaml'
     secretType: 'dockerRegistry'
     containerRegistryType: 'Azure Container Registry'
   displayName: 'K8s Infra'
-  condition: and(succeeded(), ne(variables['VERVAR'], variables['SECRET_VALUE']))
+  condition: and(succeeded(), ne(variables['VERVAR'], variables['VARCUR']))
 
 
