@@ -1,37 +1,67 @@
 <div style='text-align: justify;'>
 
-<div id='top'/> 
+<div id='top'/>
 
 ### Summary
+
 ###### [00 - Daily Scrum](#Scrum)
+
 ###### [01 - Kubernetes, AKS and Azure Pipelines doc reading](#Doc)
+
 ###### [02 - Architecture Topology](#Topology)
+
 ###### [03 - Resource List](#Resources)
+
 ###### [04 - Creation of a resource group](#RG)
+
 ###### [05 - Creation of a storage account (standard GRS)](#Storacc)
+
 ###### [06 - Creation of the AKS Cluster (with SSH keys generated)](#AKS)
+
 ###### [07 - Connecting the AKS Cluster and Azure](#Connecting)
+
 ###### [08 - Creation of the redis secret](#RedSecret)
+
 ###### [09 - Connecting to Azure DevOps Pipelines](#DevOps)
+
 ###### [10 - Creation of a test pipeline](#Pipeline)
+
 ###### [11 - Checks and tests](#Checks)
+
 ###### [12 - Error messages](#Error)
+
 ###### [13 - Trying to find a solution](#Solution)
+
 ###### [14 - Updating the voting app on the script](#Updating)
+
 ###### [15 - Remove the PV](#PV)
+
 ###### [16 - Delete everything and start again](#Again)
+
 ###### [17 - Add Ingress](#Ingress)
+
 ###### [18 - Install Cert-manager and Jetstack (for gandi)](#Cert-manager)
+
 ###### [19 - Creation of a Gandi secret](#Gsecret)
+
 ###### [20 - Install cert-manager webhook for gandi](#Webhook)
+
 ###### [21 - Creation of secret role and binding for webhook](#Binding)
+
 ###### [22 - Check the certificate](#Certificate)
+
 ###### [23 - Scheduling](#Scheduling)
+
 ###### [24 - Pipeline debugging](#Debugging)
+
 ###### [25 - How to get a certificate Summary](#Summary)
+
 ###### [26 - Executive summary](#ExecSummary)
+
 ###### [27 - Technical Architecture Document of deployed infrastructure](#DAT)
+
 ###### [28 - Check consumption](#Consumption)
+
 ###### [29 - Usefull Commands](#UsefullCommands)
 
 <div id='Scrum'/>  
@@ -50,6 +80,7 @@ Frequent meeting with other coworkers to study solutions to encountered problems
 <div id='Docs'/>  
 
 #### **Kubernetes, AKS and Azure Pipelines doc reading**
+
 Lecture des documentations afin de déterminer les fonctionnements, prérequis et outils/logiciels nécessaires pour remplir les différentes tâches du Brief 7.
 
 [&#8679;](#top)  
@@ -57,6 +88,7 @@ Lecture des documentations afin de déterminer les fonctionnements, prérequis e
 <div id='Topology'/>  
 
 #### **Architecture Topology**
+
 Infrastructure Plannifiée
 
 ![application_function](https://user-images.githubusercontent.com/108001918/215785565-1c0a7fac-5c4d-46fb-8f0f-070392580336.png)
@@ -92,8 +124,7 @@ Infrastructure Plannifiée
 | Cert-manager | N/A | N/A | v1.10.1 |
 | Certificat TLS | N/A | N/A | ✓ |
 
-
-ID Subscription : 
+ID Subscription :
 a1f74e2d-ec58-4f9a-a112-088e3469febb
 
 [&#8679;](#top)  
@@ -446,7 +477,7 @@ Then I verified that the pipeline job was a success.
 
 ### **Pipeline debugging**
 
-I found that I had issues with my pipeline that did not update the app version even though it was running. I added some commands to update the Kubenertes secret but the cmd line's job was failing. The commands were not read. 
+I found that I had issues with my pipeline that did not update the app version even though it was running. I added some commands to update the Kubenertes secret but the cmd line's job was failing. The commands were not read.
 
 Then I relaunched the pipeline and got an error message saying that `the filename could not be found`. After several checks it seemed to be a credential issue. I proceeded in two steps :
 
@@ -471,6 +502,9 @@ VERCUR=$(echo "$VAR1" | base64 -d)
 ```
 
 Then I checked the result with `echo` and I had the app version display in clear without the quotation marks for the Kubenertes secret and for the curl which I then could compare. To sum up : I now have the current version, the secret version of the app and the potential difference between the two, allowing me to automatize to update (or not) the secret and the pod.
+
+_I could have also used a different way to remove the quotations marks from the variable and secret. This regex `s/^\"(.*)\"$/\1/` allows me to remove the quotation marks at the beginning and the end, but most importantly, keep 'safe' a group of characters that could contains quotation marks as well (for example a password). In this brief it is not a problem but in other situations it could become one._  
+_In conclusion, as it was Alfred who created this regex to show me how he would have done it and explained it to me, I did not put it in the brief and kept my solution, but I will use it in the future._
 
 [&#8679;](#top)
 
@@ -498,7 +532,7 @@ Finally, apply the Issuer yaml file and ONLY THEN, apply the certificate file (c
 
 [&#8679;](#top)
 
-<div id='DAT'/> 
+<div id='DAT'/>
 
 ### **Technical Architecture Document of deployed infrastructure**
 
@@ -506,7 +540,7 @@ Finally, apply the Issuer yaml file and ONLY THEN, apply the certificate file (c
 
 [&#8679;](#top)
 
-<div id='Consumption'/> 
+<div id='Consumption'/>
 
 ### **Check consumption**
 
@@ -536,7 +570,7 @@ I calculated costs on several paying plans :
 
 alias [WhatWeWant]="[WhatIsChanged]"  
 
-_Example :_  
+*Example :*  
 
 ```bash
 alias k="kubectl"
@@ -548,7 +582,7 @@ alias k="kubectl"
 
 kubectl apply -f [name-of-the-yaml-file]
 
-_Example :_  
+*Example :*  
 
 ```bash
 kubectl apply -f azure-vote.yaml
@@ -568,17 +602,17 @@ kubectl get secrets
 kubectl get logs
 ```
 
-_To keep verifying the resources add --watch at the end of the command :_
+*To keep verifying the resources add --watch at the end of the command :*
 
-_Example :_
+*Example :*
 
 ```bash
 kubectl get services --watch
 ```
 
-_To check the resources according to their namespace, add --namespace after the command and the namespace's name :_
+*To check the resources according to their namespace, add --namespace after the command and the namespace's name :*
 
-_Example :_
+*Example :*
 
 ```bash
 kubectl get services --namespace [namespace's-name]
@@ -598,27 +632,27 @@ kubectl describe secrets
 kubectl describe logs
 ```
 
-_To specify which resource needs to be described just put the resource ID at the end of the command._
+*To specify which resource needs to be described just put the resource ID at the end of the command.*
 
-_Example :_
+*Example :*
 
 ```bash
 kubectl describe svc redis-service
 ```
 
-_To access to all the logs from all containers :_
+*To access to all the logs from all containers :*
 
 ```bash
 kubectl logs podname --all-containers
 ```
 
-_To access to the logs from a specific container :_
+*To access to the logs from a specific container :*
 
 ```bash
 kubectl logs podname -c [container's-name]
 ```
 
-_To list all events from a specific pod :_
+*To list all events from a specific pod :*
 
 ```bash
 kubectl get events --field-selector [involvedObject].name=[podsname]
@@ -640,13 +674,13 @@ az group delete --name [resourceGroupName] --yes --no-wait
 
 ### **To create a repository Helm and install Jetstack**
 
-_To create the repository and install Jetstack :_
+*To create the repository and install Jetstack :*
 
 ```bash
 helm repo add jetstack https://charts.jetstack.io
 ```
 
-_To check the repository created and Jetstack version :_
+*To check the repository created and Jetstack version :*
 
 ```bash
 helm search repo jetstack
@@ -656,25 +690,25 @@ helm search repo jetstack
 
 ### **To create a role for Gandi's secret and bind it to the webhook**
 
-_To create the role :_
+*To create the role :*
 
 ```bash
 kubectl create role [role-name] --verb=[Authorised-actions] --resource=[Authorised-resource]
 ```
 
-_Example :_  
+*Example :*  
 
 ```bash
 kubectl create role access-secrets --verb=get,list,watch,update,create --resource=secrets
 ```
 
-_To bind it :_  
+*To bind it :*  
 
 ```bash
 kubectl create rolebinding --role=[role-name] [role-name] --serviceaccount=[group]:[group-item]
 ```
 
-_Example :_  
+*Example :*  
 
 ```bash
 kubectl create rolebinding --role=access-secrets default-to-secrets --serviceaccount=cert-manager:cert-manager-webhook-gandi-1665665029
@@ -726,7 +760,7 @@ az aks update --resource-group b6duna --name AKSClusterd2 --enable-cluster-autos
 get HorizontalPodAutoscaler
 ```
 
-_Example of how the results will display :_  
+*Example of how the results will display :*  
 
 ```bash
 horizontalpodautoscaler.autoscaling/scaling-voteapp created
@@ -748,7 +782,7 @@ kubectl get ValidatingWebhookConfiguration -A
 kubectl delete -A ValidatingWebhookConfiguration [rolename]  
 ```
 
-_Example :_  
+*Example :*  
 
 ```bash
 kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
