@@ -88,11 +88,15 @@ Objectifs :
 Jeudi 02/02/23  
 Résultats de la veille :
 
-* 
+* Problème Pipeline réglé
+* Présentation Marp terminée
+* Plan d'action terminé
+* Brief terminé :D
 
 Objectifs :
 
-* 
+* Faire la présentation
+* Profiter !
 
 Vendredi 03/02/23  
 Résultats de la veille :
