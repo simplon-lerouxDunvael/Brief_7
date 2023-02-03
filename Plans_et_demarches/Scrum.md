@@ -101,9 +101,10 @@ Objectifs :
 Vendredi 03/02/23  
 Résultats de la veille :
 
-* 
+* Présentation réalisée
+* Examen de test technique en anglais réalisé
 
 Objectifs :
 
-* 
+* Profiter !
 
